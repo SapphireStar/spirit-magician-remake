@@ -1,0 +1,28 @@
+{
+"infoList":
+[
+{"panelTypeString":"Message",
+"path":"UIPanel/MessagePanel"},
+
+{"panelTypeString":"Start",
+"path":"UIPanel/StartPanel"},
+
+{"panelTypeString":"Login",
+"path":"UIPanel/LoginPanel"},
+
+{"panelTypeString":"Register",
+"path":"UIPanel/RegisterPanel"},
+
+{"panelTypeString":"SwitchSide",
+"path":"UIPanel/SwitchSidePanel"},
+
+{"panelTypeString": "Command",
+ "path": "UIPanel/CommandPanel"},
+
+{"panelTypeString": "BattleUI",
+ "path": "UIPanel/BattleUIPanel"},
+
+{"panelTypeString": "Userdata",
+ "path": "UIPanel/UserdataPanel"}
+]
+}

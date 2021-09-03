@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1832779841654d54b9b3699cdcb80a5a, type: 3}
+  m_Name: EnemyFire01
+  m_EditorClassIdentifier: 
+  elfType: 0
+  ElfName: EnemyFire01
+  ElfID: 1008
+  Elf_Icon: {fileID: 0}
+  Description: 
+  ElfPrefab: {fileID: 4509643475634048351, guid: 839810d31195b7c40b06a3184bd35dfb, type: 3}
+  health: 5
+  Damage: 1
+  FireDamage: 0
+  IceDamage: 0
+  DarkDamage: 0
+  HolyDamage: 0
+  NatureDamage: 0
+  Defence: 0
