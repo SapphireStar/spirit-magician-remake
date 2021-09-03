@@ -5,6 +5,7 @@ using PbBattle;
 using Google.Protobuf;
 using Newtonsoft.Json;
 using System;
+using ElfWizard.Manager;
 
 namespace ElfWizard
 {
@@ -17,6 +18,7 @@ namespace ElfWizard
         public static void SendRequest(BattleActionType type)
         {
             C2S_BattleAction battleaction = new C2S_BattleAction();
+            BattleManager battleManager = GameFacade.Instance.battleManager;
             //TODO: ·¢ËÍbattleAction
             switch (type)
             {
@@ -30,11 +32,11 @@ namespace ElfWizard
                 case BattleActionType.BatSurrender:
                     break;
                 case BattleActionType.BatTimeout:
-                    if (GameFacade.Instance.curRoundInfo.ActiveUID == GameFacade.Instance.playerBattleInfo.Uid)
+                    if (battleManager.curRoundInfo.ActiveUID == battleManager.playerBattleInfo.Uid)
                     {
                         battleaction.ActionType = BattleActionType.BatTimeout;
-                        battleaction.RoundIndex = GameFacade.Instance.curRoundInfo.RoundIndex;
-                        battleaction.TargetUID = GameFacade.Instance.enemyBattleInfo.Uid;
+                        battleaction.RoundIndex = battleManager.curRoundInfo.RoundIndex;
+                        battleaction.TargetUID = battleManager.enemyBattleInfo.Uid;
                         NetManager.Instance.Send(battleaction);
                     }
                     break;

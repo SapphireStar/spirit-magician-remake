@@ -22,7 +22,7 @@ namespace ElfWizard
         {
             if (successLogin)
             {
-                GameFacade.Instance.LoadSceneAsync("map01"/*, battleInfo*/);
+                GameFacade.Instance.LoadSceneAsync("map01",()=> { }/*, battleInfo*/);
                 successLogin = false;
             }
         }

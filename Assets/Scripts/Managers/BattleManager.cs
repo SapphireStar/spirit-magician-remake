@@ -4,12 +4,22 @@ using System.Threading;
 using UnityEngine;
 using PbBattle;
 using Newtonsoft.Json;
+using PbSpirit;
 
 namespace ElfWizard.Manager
 {
     public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOSE }
-    public class BattleManager: BaseManager
+    public class BattleManager : BaseManagerNonMono
     {
+        public NewPlayerController player;
+        public NewPlayerController enemy;
+        public NewPlayerController currentTurn;
+        public BattleRoundInfo curRoundInfo;
+        public BattleRoundInfo nextRoundInfo;
+        public PlayerBattleInfo playerBattleInfo;
+        public PlayerBattleInfo enemyBattleInfo;
+
+        public BattleInfo battleInfo;
         public GameObject GameStartUI;
         public static bool attacked;//用于接受精灵的攻击是否已经结束
         //int roundCount;//记录回合数，用于判断是否需要减少buff回合数
@@ -22,13 +32,42 @@ namespace ElfWizard.Manager
         public int countDown=10;
         public const int RemainTime = 20;
 
-        
+        public BattleManager(GameFacade facade) : base(facade)
+        {
+        }
+
         private void Start()
         {
 
         }
         public override void OnInit()
         {
+            player =GameObject.Instantiate(ResourceManager.Load<GameObject>("Player"), GameObject.Find("PlayerSpawnPoint").transform).GetComponent<NewPlayerController>();
+            enemy = GameObject.Instantiate(ResourceManager.Load<GameObject>("Player"), GameObject.Find("EnemySpawnPoint").transform).GetComponent<NewPlayerController>();
+            battleInfo = new BattleInfo();
+            BattleUnit unit1 = new BattleUnit();
+            BattleUnit unit2 = new BattleUnit();
+            Spirit s1 = new Spirit { Id = "1", Name = "ElfFire01", Specialist = SpecialistType.StFire, Level = 1, SkillDescription = "test1", Selected = true };
+            Spirit s2 = new Spirit { Id = "2", Name = "ElfIce01", Specialist = SpecialistType.StIce, Level = 1, SkillDescription = "test2", Selected = true };
+            Spirit s3 = new Spirit { Id = "3", Name = "EnemySlimeFire01", Specialist = SpecialistType.StFire, Level = 1, SkillDescription = "test3", Selected = true };
+            unit1.Spirits.Add(s1);
+            unit1.Spirits.Add(s2);
+            unit2.Spirits.Add(s3);
+            s1.Rarity = RarityType.RtCommon;
+            s2.Rarity = RarityType.RtCommon;
+            s3.Rarity = RarityType.RtCommon;
+            battleInfo.MapID = 1;
+            unit1.UserBaseInfo = new Base.UserBaseInfo();
+            unit2.UserBaseInfo = new Base.UserBaseInfo();
+            battleInfo = new BattleInfo();
+            battleInfo.Players.Add(unit1);
+            battleInfo.Players.Add(unit2);
+            unit1.UserBaseInfo.Uid = 1;
+            unit2.UserBaseInfo.Uid = 2;
+            playerBattleInfo = new PlayerBattleInfo();
+            enemyBattleInfo = new PlayerBattleInfo();
+            playerBattleInfo.Hp = 500;
+            enemyBattleInfo.Hp = 500;
             base.OnInit();
             GameFacade.Instance.turn = BattleState.START;
             GameFacade.Instance.uiManager.PushPanel(UIPanelType.BattleUI);
@@ -39,15 +78,18 @@ namespace ElfWizard.Manager
 
         public void StartGame()
         {
-            StartCoroutine(GameStart());
+           GameFacade.Instance.StartCoroutine(GameStart());
         }
         IEnumerator GameStart()
         {
+            GameObject Canvas = GameObject.Find("Canvas");
+            GameStartUI = Canvas.transform.Find("GameStart").gameObject;
+            Debug.Log(GameStartUI.name);
             GameStartUI.SetActive(true);
             yield return new WaitForSeconds(2);
             GameStartUI.SetActive(false);
-            GameFacade.Instance.SetInitialState(BattleState.PLAYERTURN);
-            StartCoroutine(CountingDown());
+            SetInitialState(BattleState.PLAYERTURN);
+            GameFacade.Instance.StartCoroutine(CountingDown());
 /*            GameFacade.Instance.turn = Random.Range(0, 1) < 0.5f ? BattleState.PLAYERTURN : BattleState.ENEMYTURN;
             GameFacade.Instance.SetCurrentTurn(GameFacade.Instance.turn);
             if (GameFacade.Instance.turn == BattleState.PLAYERTURN)
@@ -56,47 +98,33 @@ namespace ElfWizard.Manager
         }
         public void StartAttack()
         {
-            StopAllCoroutines();
-            StartCoroutine(SequenceAttack());
+            GameFacade.Instance.StopAllCoroutines();
+            GameFacade.Instance.StartCoroutine(SequenceAttack());
 
         }
+        public void updateRoundInfo(BattleRoundInfo currentRI, BattleRoundInfo nextRI = null)
+        {
+            curRoundInfo = currentRI;
+            if(nextRI!=null)
+                nextRoundInfo = nextRI;
 
+        }
         public void UpdateBattleRoundInfo(BattleRoundInfo info, S2C_UpdateBattleAction battleAction)
         {
             Debug.Log(JsonConvert.SerializeObject(info));
-            try
+ 
+            foreach (var item in battleAction.PlayerBattleInfos)
             {
-                foreach (var item in battleAction.PlayerBattleInfos)
+                if (item.Uid == Userdata.GetUid())
                 {
-                    if (item.Uid == GameFacade.Instance.playerBattleInfo.Uid)
-                    {
-                        translateInformation(item, GameFacade.Instance.playerBattleInfo);
-                    }
-                    if (item.Uid == GameFacade.Instance.enemyBattleInfo.Uid)
-                    {
-                        translateInformation(item, GameFacade.Instance.enemyBattleInfo);
-                    }
-
+                    translateInformation(item, playerBattleInfo);
+                }
+                else
+                {
+                    translateInformation(item, enemyBattleInfo);
                 }
             }
-            catch (System.Exception e)
-            {
-                Debug.Log("S2C_battleAction信息错误,无法更新战斗信息: " + e);
-            }
-
-            //try
-            //{
-            try
-            {
-                GameFacade.Instance.playerBattleInfo.Dices = info.PlayerBattleInfos[0].Dices;
-                GameFacade.Instance.enemyBattleInfo.Dices = info.PlayerBattleInfos[0].Dices;
-            }
-            catch (System.Exception e)
-            {
-                Debug.Log("更新玩家骰子数失败: " + e);
-            }
-
-
+            
                 roundIndex = info.RoundIndex;
                 activeUID = info.ActiveUID;
                 foreach (var item in info.DiceInfo)
@@ -127,32 +155,20 @@ namespace ElfWizard.Manager
 
 
         }
+        public void SetInitialState(BattleState state)
+        {
+            GameFacade.Instance.turn = state;
+            if (state == BattleState.ENEMYTURN)
+                currentTurn = enemy;
+            else currentTurn = player;
+        }
         private static void translateInformation(PlayerBattleInfo from, PlayerBattleInfo target)
         {
             target.Uid = from.Uid;
             target.Hp = from.Hp;
             target.Dices = from.Dices;
         }
-        /*        void sequenceAttack(Elf_Monobehavior[] playerElfs)
-                {
-                    NewPlayerController player = GameFacede.Instance.currentTurn;
 
-                    int i = 0;
-                    while (i < player.PlayerElfs.Count)
-                    {
-
-                        playerElfs[i].UseSkill();
-                        while (!attacked)
-                        {
-                            Debug.Log(attacked);
-                            Thread.Sleep(10);
-                        }
-                        attacked = false;
-                        i++;
-
-
-                    }
-                }*/
         /// <summary>
         /// 向服务器发送开始攻击的信息
         /// </summary>
@@ -162,7 +178,7 @@ namespace ElfWizard.Manager
         {
             
             //yield return new WaitForSeconds(0.5f);
-           NewPlayerController  player = GameFacade.Instance.currentTurn.GetComponent<NewPlayerController>();
+           NewPlayerController  player = currentTurn.GetComponent<NewPlayerController>();
             int i = 0;
             while (i < player.PlayerElfs.Count)
             {
@@ -184,7 +200,7 @@ namespace ElfWizard.Manager
                 player.PlayerElfs[j].GetComponent<IBuffer>().UpdateBuff();
             }
             player.UpdateBuff();
-            StartCoroutine(waitForNextRound());
+            GameFacade.Instance.StartCoroutine(waitForNextRound());
         }
 
         IEnumerator waitForNextRound()
@@ -195,7 +211,7 @@ namespace ElfWizard.Manager
             //TODO如果其中一方死亡，退出战斗回合，出现结算画面
             GameFacade.Instance.SwitchRound();
             countDown = RemainTime;
-            StartCoroutine(CountingDown());
+            GameFacade.Instance.StartCoroutine(CountingDown());
         }
         IEnumerator CountingDown()
         {
@@ -209,7 +225,7 @@ namespace ElfWizard.Manager
             {
                 yield return new WaitForSeconds(1);
                 countDown--;
-                StartCoroutine(CountingDown());
+                GameFacade.Instance.StartCoroutine(CountingDown());
             }
         }
 

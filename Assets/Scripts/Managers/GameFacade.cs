@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using PbBattle;
 using System.IO;
 using PbSpirit;
+using System;
 
 namespace ElfWizard
 {
@@ -16,15 +17,6 @@ namespace ElfWizard
         /// battle Informations
         /// </summary>
        // public BattleActionType actionType;
-        public NewPlayerController player;
-        public NewPlayerController enemy;
-        public NewPlayerController currentTurn;
-        public PlayerBattleInfo playerBattleInfo = new PlayerBattleInfo();
-        public PlayerBattleInfo enemyBattleInfo = new PlayerBattleInfo();
-        public BattleInfo battleInfo;
-        public List<int> specialEffects = new List<int>();
-        public BattleRoundInfo curRoundInfo;
-        public BattleRoundInfo nextRoundInfo;
         /// <summary>
         /// Managers
         /// </summary>
@@ -33,7 +25,7 @@ namespace ElfWizard
         public RequestManager requestManager;
         public AudioManager audioManager;
         public UIManager uiManager;
-        BattleSceneManager BSManager;
+        public BattleSceneManager BSManager;
 
         public Test testnet;
         /// <summary>
@@ -44,30 +36,7 @@ namespace ElfWizard
         private static GameFacade _instance;
         public BattleState turn;
         public static GameFacade Instance { get { return _instance; } }
-        private void OnGUI()
-        {
-/*            if(GUI.Button( new Rect(500, 500, 300, 100), "readBttleInfo"))
-            {
-                BattleInfo temp = new BattleInfo();
-                temp.Id = "3";
-                temp.Type = BattleType.BtPvp;
-                temp.RoundNum = 3;
-                temp.SpecialEffects.Add(new List<int> { 1, 2, 3, 4, 5 });
-                temp.MapID = 3;
-                temp.DefaultDices = 5;
-                temp.EndTime = 60;
-                temp.StartTime = 10;
-                BattleUnit unit = new BattleUnit();
-                temp.Players.Add(unit);
-                byte[] info = new byte[temp.CalculateSize()];
 
-                Google.Protobuf.CodedOutputStream buffer = new Google.Protobuf.CodedOutputStream(info);
-                temp.WriteTo(buffer);
-                BattleInfo battleInfo = BattleInfo.Parser.ParseFrom(info);
-               // BattleInfo battleInfo = ProtobufManager.ReadBattleInfo(info);
-                Debug.Log(battleInfo.Id + " " + battleInfo.Type +" "+battleInfo.MapID+ " " + battleInfo.RoundNum + " " + battleInfo.SpecialEffects[3]);
-            }*/
-        }
         private void Awake()
         {
             if (_instance != null)
@@ -90,40 +59,10 @@ namespace ElfWizard
         }
         public void Init()
         {
-            try
-            {
-                player = Instantiate(ResourceManager.Load<GameObject>("Player"), GameObject.Find("PlayerSpawnPoint").transform).GetComponent<NewPlayerController>();
-                enemy = Instantiate(ResourceManager.Load<GameObject>("Player"), GameObject.Find("EnemySpawnPoint").transform).GetComponent<NewPlayerController>();
 
-            }
-            catch (System.Exception e)
-            {
-                Debug.Log("无法生成玩家: " + e);
-            }
 
-            BattleUnit unit1 = new BattleUnit();
-            BattleUnit unit2 = new BattleUnit();
-            Spirit s1 = new Spirit { Id = "1", Name = "ElfFire01", Specialist = SpecialistType.StFire, Level = 1, SkillDescription = "test1", Selected = true };
-            Spirit s2 = new Spirit { Id = "2", Name = "ElfIce01", Specialist = SpecialistType.StIce, Level = 1, SkillDescription = "test2", Selected = true };
-            Spirit s3 = new Spirit { Id = "3", Name = "EnemySlimeFire01", Specialist = SpecialistType.StFire, Level = 1, SkillDescription = "test3", Selected = true };
-            unit1.Spirits.Add(s1);
-            unit1.Spirits.Add(s2);
-            unit2.Spirits.Add(s3);
-            s1.Rarity = RarityType.RtCommon;
-            s2.Rarity = RarityType.RtCommon;
-            s3.Rarity = RarityType.RtCommon;
 
-            unit1.UserBaseInfo = new Base.UserBaseInfo();
-            unit2.UserBaseInfo = new Base.UserBaseInfo();
-            battleInfo = new BattleInfo();
-            battleInfo.Players.Add(unit1);
-            battleInfo.Players.Add(unit2);
-            unit1.UserBaseInfo.Uid = 1;
-            unit2.UserBaseInfo.Uid = 2;
-            playerBattleInfo.Hp = 20;
-            enemyBattleInfo.Hp = 20;
-
-            battleManager = GameObject.FindObjectOfType<BattleManager>();
+            battleManager = new BattleManager(this);
             spawnManager = GameObject.FindObjectOfType<SpawnManager>();
             requestManager = new RequestManager(this);
            // clientManager = new ClientManager(this);
@@ -147,11 +86,12 @@ namespace ElfWizard
 
             if (battleManager != null && spawnManager != null)
             {
-                battleManager.OnInit();
+
                 spawnManager.OnInit();
             }
+            //battleManager.OnInit();
             uiManager.OnInit();
-            BSManager.OnInit();
+            //BSManager.OnInit();
             requestManager.OnInit();
             audioManager.OnInit();
             //clientManager.OnInit();
@@ -161,16 +101,9 @@ namespace ElfWizard
             }
             //testLogin.Init();
         }
-        public void SetInitialState(BattleState state)
-        {
-            turn = state;
-            if (state == BattleState.ENEMYTURN)
-                currentTurn = enemy;
-            else currentTurn = player;
-        }
+
         public void StartGame()
         {
-            battleUI.InitBattlePanel(player.health, enemy.health);
             battleManager.StartGame();
         }
         public void StartAttack()
@@ -210,19 +143,16 @@ namespace ElfWizard
         {
             GameFacade.Instance.SetCurrentTurn(BattleState.ENEMYTURN);
             turn = BattleState.ENEMYTURN;
-            currentTurn = enemy;
         }
         public void SwitchToPlayer()
         {
             GameFacade.Instance.SetCurrentTurn(BattleState.PLAYERTURN);
             turn = BattleState.PLAYERTURN;
-            currentTurn = player;
         }
 
         public void UpdateRoundInfo(BattleRoundInfo currentRI, BattleRoundInfo nextRI = null)
         {
-            curRoundInfo = currentRI;
-            nextRoundInfo = nextRI;
+            battleManager.updateRoundInfo(currentRI, nextRI);
             
         }
         public void SetCurrentTurn(BattleState state)
@@ -233,10 +163,12 @@ namespace ElfWizard
         {
             return ProtobufManager.GetUnitSpirits(unit);
         }
-        public void LoadSceneAsync(string sceneToLoad,BattleInfo battleInfo = null)
+
+        public void LoadSceneAsync(string sceneToLoad, Action Initializations, BattleInfo battleInfo = null)
         {
-            Constants.SceneToLoad = sceneToLoad;
-            this.battleInfo = battleInfo;
+            Constants.action = Initializations;
+            Constants.SceneToLoad = sceneToLoad;//TODO:这里后期需要服务端与客户端统一地图命名规则，将SceneToLoad设为battleInfo中的mapID
+            battleManager.battleInfo = battleInfo;
             SceneManager.LoadScene("Loading");
         }
         public void HitUI(Vector3 position, float damage)
@@ -265,10 +197,6 @@ namespace ElfWizard
         public void ShowMessage(string msg)
         {
             uiManager.ShowMessage(msg);
-        }
-        public void SendRequest(RequestCode requestCode, ActionCode actionCode, string data)
-        {
-           // clientManager.SendRequest(requestCode, actionCode, data);
         }
 
         public void InitPlayerPackage(List<Spirit> playerSpirits, List<Spirit> enemySpirits)

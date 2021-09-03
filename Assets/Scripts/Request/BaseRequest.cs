@@ -26,7 +26,7 @@ namespace ElfWizard
         protected virtual void SendRequest() { }
         protected void SendRequest(string data)
         {
-            gameFacade.SendRequest(requestCode, actionCode, data);
+            //gameFacade.SendRequest(requestCode, actionCode, data);
         }
 
 

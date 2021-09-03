@@ -26,6 +26,7 @@ namespace ElfWizard.Manager
         int[] PlayerElement;
         int[] EnemyElement;
         public ElementSlotHolder elementSlotHolder;
+        BattleManager battleManager;
 /*        public List<ElementType> checkPlayerHasType = new List<ElementType>();
         public List<ElementType> checkEnemyHasType = new List<ElementType>();*/
 
@@ -44,6 +45,7 @@ namespace ElfWizard.Manager
         public override void OnInit()
         {
             base.OnInit();
+            battleManager = GameFacade.Instance.battleManager;
             playerElfPackage = new List<Spirit>();
             enemyElfPackage = new List<Spirit>();
             facede = GameFacade.Instance;
@@ -143,7 +145,7 @@ namespace ElfWizard.Manager
                     };//TODO:未来根据不同的用户创建不同的映射
 
             List<int> curElfUID = new List<int>();
-            foreach (var item in GameFacade.Instance.currentTurn.PlayerElfs)
+            foreach (var item in GameFacade.Instance.battleManager.currentTurn.PlayerElfs)
             {
                 curElfUID.Add(item.GetComponent<Elf_Monobehavior>().ElfID);
             }
@@ -233,19 +235,19 @@ namespace ElfWizard.Manager
                 }
             }
 
-            GameFacade.Instance.currentTurn.AddElf(elf[UnityEngine.Random.Range(0, elf.Count)],level,0);
+            battleManager.currentTurn.AddElf(elf[UnityEngine.Random.Range(0, elf.Count)],level,0);
         }
         public void SetCurrentTurn(BattleState state)
         {
 
             if (state == BattleState.PLAYERTURN)
             {
-                GameFacade.Instance.currentTurn = facede.player;
+                battleManager.currentTurn = battleManager.player;
 
             }
             else if (state == BattleState.ENEMYTURN)
             {
-                GameFacade.Instance.currentTurn = facede.enemy;
+                battleManager.currentTurn = battleManager.enemy;
             }
         }
         public void InitPlayerPackage(List<Spirit> playerSpirits,List<Spirit> enemySpirits)

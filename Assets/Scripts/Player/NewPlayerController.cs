@@ -90,7 +90,7 @@ namespace ElfWizard
             }
             anim.SetTrigger("GetHit");
             GameFacade.Instance.HitUI(transform.position, health);
-            GameFacade.Instance.battleUI.UpdateHealthBar(GameFacade.Instance.curRoundInfo);
+            GameFacade.Instance.battleUI.UpdateHealthBar(GameFacade.Instance.battleManager.curRoundInfo);
         }
 
         public Vector3 GetBeAttackPlace()

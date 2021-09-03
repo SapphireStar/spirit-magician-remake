@@ -177,7 +177,7 @@ public class CommandPanel : BasePanel
         }
         C2S_BattleAction battleAction = new C2S_BattleAction();
         battleAction.ActionType = (BattleActionType)int.Parse(commands[0]);
-        battleAction.TargetUID = GameFacade.Instance.curRoundInfo.ActiveUID;
+        battleAction.TargetUID = GameFacade.Instance.battleManager.curRoundInfo.ActiveUID;
         //Debug.Log("------>Active UID: "+GameFacade.Instance.curRoundInfo.ActiveUID);
 
         if (commands.Length > 1)

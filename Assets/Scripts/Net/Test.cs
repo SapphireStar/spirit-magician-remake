@@ -111,11 +111,18 @@ public class Test : MonoBehaviour
         Debug.Log("------ PbLoginS2CEnterGame -----");
         S2C_EnterGame eg = S2C_EnterGame.Parser.ParseFrom(obj.ToByteArray());
         Userdata.Instance.userdata = obj;
-        GameFacade.Instance.LoadSceneAsync("map01");
+        GameFacade.Instance.LoadSceneAsync
+        ("map01", //TODO:未来需要根据服务器数据来更改将要进入的地图
+        () =>
+        {
+            GameFacade.Instance.battleManager.OnInit();
+            GameFacade.Instance.BSManager.OnInit();
+        });
+
         setUpUserBaseInfo();//给当前类中的userBaseInfo赋值
 
-
     }
+
     void setUpUserBaseInfo()
     {
         string json = JsonConvert.SerializeObject(Userdata.Instance.userdata);
@@ -139,7 +146,7 @@ public class Test : MonoBehaviour
             battleID = ((S2C_StartBattle)obj).BattleInfo.Id;
             Debug.Log("BattleHandler ---- battleID: " + battleID);
 
-            GameFacade.Instance.battleInfo = ((S2C_StartBattle)obj).BattleInfo;//初始化对战玩家信息,临时代码 TODO:需要修改
+            GameFacade.Instance.battleManager.battleInfo = ((S2C_StartBattle)obj).BattleInfo;//初始化对战玩家信息,临时代码 TODO:需要修改
 
             C2S_EnterBattle msg = new C2S_EnterBattle();
             NetManager.Instance.Send(msg);
@@ -259,7 +266,7 @@ public class Test : MonoBehaviour
         C2S_BattleAction action = new C2S_BattleAction();
         action.ActionType = actionType;
         action.RoundIndex = curRoundInfo.RoundIndex;
-        action.TargetUID = GameFacade.Instance.enemyBattleInfo.Uid;
+        action.TargetUID = GameFacade.Instance.battleManager.enemyBattleInfo.Uid;
         if (lockedDices != null)
         {
             for (int i = 0; i < lockedDices.Length; i++)

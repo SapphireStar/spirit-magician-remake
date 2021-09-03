@@ -21,6 +21,7 @@ namespace ElfWizard
         public long startTime;
         public long endTime;
         private BattleInfo battleInfo;
+        BattleManager battleManager;
         /// <summary>
         /// 该类用于初始化游戏场景
         /// </summary>
@@ -29,7 +30,13 @@ namespace ElfWizard
         public BattleSceneManager(GameFacade gameFacade): base(gameFacade)
         {
 
-            battleInfo = GameFacade.Instance.battleInfo;
+        }
+        public override void OnInit()//TODO:后期修改各信息的赋值方式
+        {
+
+            battleManager = GameFacade.Instance.battleManager;
+            battleInfo = battleManager.battleInfo;
+            Debug.Log(battleManager.battleInfo.MapID);
             mapID = battleInfo.MapID;
             playerUnit = battleInfo.Players[0];
             enemyUnit = battleInfo.Players[1];
@@ -42,28 +49,21 @@ namespace ElfWizard
             }
             defaultDices = battleInfo.DefaultDices;
             startTime = battleInfo.StartTime;
-        }
-        public override void OnInit()
-        {
-            try
-            {
-                facade.player.tag = "Player";
-                facade.enemy.tag = "Enemy";
-                facade.player.transform.localPosition = Vector3.zero;
-                facade.enemy.transform.localPosition = Vector3.zero;
-                facade.enemy.transform.localRotation = Quaternion.Euler(new Vector3(0, 180, 0));
-                facade.player.UID = battleInfo.Players[0].UserBaseInfo.Uid;
-                facade.enemy.UID = battleInfo.Players[1].UserBaseInfo.Uid;
-                facade.playerBattleInfo.Uid = battleInfo.Players[0].UserBaseInfo.Uid;
-                facade.enemyBattleInfo.Uid = battleInfo.Players[1].UserBaseInfo.Uid;
+
+                battleManager.player.tag = "Player";
+                battleManager.enemy.tag = "Enemy";
+                battleManager.player.transform.localPosition = Vector3.zero;
+                battleManager.enemy.transform.localPosition = Vector3.zero;
+                battleManager.enemy.transform.localRotation = Quaternion.Euler(new Vector3(0, 180, 0));
+                battleManager.player.UID = battleInfo.Players[0].UserBaseInfo.Uid;
+                battleManager.enemy.UID = battleInfo.Players[1].UserBaseInfo.Uid;
+                battleManager.playerBattleInfo.Uid = battleInfo.Players[0].UserBaseInfo.Uid;
+                battleManager.enemyBattleInfo.Uid = battleInfo.Players[1].UserBaseInfo.Uid;
                 InitSpiritPackage();
                 base.OnInit();
 
-            }
-            catch (System.Exception e)
-            {
-                Debug.Log("初始化战斗信息失败: " + e);
-            }
+            
+
         }
         void InitSpiritPackage()
         {

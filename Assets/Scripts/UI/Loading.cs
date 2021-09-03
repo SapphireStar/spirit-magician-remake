@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,8 +18,11 @@ namespace ElfWizard {
             async = SceneManager.LoadSceneAsync(Constants.SceneToLoad);
             yield return async;
             GameFacade.Instance.Init();
+            Constants.action();
+            Constants.action = () => { };
             Destroy(gameObject);
         }
+
 
     }
 }

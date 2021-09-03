@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using PbBattle;
+using ElfWizard.Manager;
 
 namespace ElfWizard {
     /// <summary>
@@ -16,6 +17,7 @@ namespace ElfWizard {
         public Image playerFrame;
         public Image enemyAvatar;
         public Image enemyFrame;
+        BattleManager battleManager;
 
         private void Start()
         {
@@ -24,8 +26,9 @@ namespace ElfWizard {
         public override void OnEnter()
         {
             base.OnEnter();
-            playerHealthBar.maxValue = GameFacade.Instance.playerBattleInfo.Hp;
-            enemyHealthBar.maxValue = GameFacade.Instance.enemyBattleInfo.Hp;
+            battleManager = GameFacade.Instance.battleManager;
+            playerHealthBar.maxValue = battleManager.playerBattleInfo.Hp;
+            enemyHealthBar.maxValue = battleManager.enemyBattleInfo.Hp;
             playerHealthBar.value = playerHealthBar.maxValue;
             enemyHealthBar.value = enemyHealthBar.maxValue;
             //playerAvatar.sprite= ResourceManager.Load<Sprite>("playerAvatarName");
@@ -34,8 +37,8 @@ namespace ElfWizard {
         }
         public void InitBattlePanel(float playerHp,float enemyHp)
         {
-            playerHealthBar.maxValue = GameFacade.Instance.playerBattleInfo.Hp;
-            enemyHealthBar.maxValue = GameFacade.Instance.enemyBattleInfo.Hp;
+            playerHealthBar.maxValue = battleManager.playerBattleInfo.Hp;
+            enemyHealthBar.maxValue = battleManager.enemyBattleInfo.Hp;
             playerHealthBar.value = playerHealthBar.maxValue;
             enemyHealthBar.value = enemyHealthBar.maxValue;
         }
@@ -51,11 +54,11 @@ namespace ElfWizard {
                         }*/
             foreach (var item in info.PlayerBattleInfos)
             {
-                if (item.Uid == GameFacade.Instance.playerBattleInfo.Uid)
+                if (item.Uid == battleManager.playerBattleInfo.Uid)
                 {
                     playerHealthBar.value = item.Hp;
                 }
-                else if (item.Uid == GameFacade.Instance.enemyBattleInfo.Uid)
+                else if (item.Uid == battleManager.enemyBattleInfo.Uid)
                 {
                     enemyHealthBar.value = item.Hp;
                 }
