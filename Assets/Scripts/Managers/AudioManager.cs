@@ -1,17 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using Framework;
 using UnityEngine;
 
 namespace ElfWizard.Manager
 {
-    public class AudioManager : BaseManagerNonMono
+    public interface IAudioSystem : ISystem
     {
-        public AudioManager(GameFacade facade) : base(facade)
-        {
-        }
+
+    }
+    public class AudioManager : BaseManagerSystem, IAudioSystem
+    {
         private AudioSource bgAudioSource;
         private AudioSource normalAudioSource;
-        public override void OnInit()
+        protected override void OnInit()
         {
             GameObject audioSourceGO = new GameObject("AudioSource(GameObject)");
             bgAudioSource = audioSourceGO.AddComponent<AudioSource>();
@@ -38,6 +40,11 @@ namespace ElfWizard.Manager
         {
             return ResourceManager.Load<AudioClip>(soundName);
 
+        }
+
+        public override void OnDestroy()
+        {
+            
         }
     }
 }

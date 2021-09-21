@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using ElfWizard.Manager;
+using ElfWizard.Commands;
 
 namespace ElfWizard
 {
@@ -70,7 +71,7 @@ namespace ElfWizard
                     impactArray[i].Excecute(this, i);//i代表了攻击目标的索引
             }
             isDeployed = true;
-            skillData.owner.GetComponent<Elf_Monobehavior>().attacked = true;
+            new ElfEndAttackCommand().Execute();
         }
        
 /*        protected IEnumerator WaitSkillDeployed()//如果在技能释放的时候无法触发calculatetargets方法，则需要在具体的deployer中单独开启此协程

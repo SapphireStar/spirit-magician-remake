@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Common;
 using ElfWizard.Manager;
+using Framework;
 
 namespace ElfWizard
 {
-    public class RequestManager : BaseManagerNonMono
+    public interface IRequestSystem:ISystem
     {
-        public RequestManager(GameFacade gameFacade) : base(gameFacade) { }
+
+    }
+    public class RequestManager : BaseManagerSystem,IRequestSystem
+    {
 
         private Dictionary<ActionCode, BaseRequest> requestDic = new Dictionary<ActionCode, BaseRequest>();
         public void AddRequest(ActionCode actionCode, BaseRequest request)
@@ -30,5 +34,14 @@ namespace ElfWizard
             request.OnResponse(data);
         }
 
+        public override void OnDestroy()
+        {
+
+        }
+
+        protected override void OnInit()
+        {
+
+        }
     }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Framework;
+using ElfWizard.Model;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,7 +17,7 @@ namespace ElfWizard {
         }
         IEnumerator LoadScene()
         {
-            async = SceneManager.LoadSceneAsync(Constants.SceneToLoad);
+            async = SceneManager.LoadSceneAsync(ElfWizardArch.Instance.GetModel<IBattleModel>().MapName);
             yield return async;
             GameFacade.Instance.Init();
             Constants.action();

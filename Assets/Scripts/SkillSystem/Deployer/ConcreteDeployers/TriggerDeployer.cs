@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ElfWizard.Manager;
+using Framework;
+using ElfWizard.Model;
 
 namespace ElfWizard
 {
@@ -15,7 +17,7 @@ namespace ElfWizard
         {
             //StartCoroutine(WaitSkillDeployed());
             isDeployed = true;
-            skillData.owner.GetComponent<Elf_Monobehavior>().attacked = true;
+            Framework.ElfWizardArch.Get<BattleModel>().currentTurnElfs.Value++;
         }
         public override void DeploySkill(GameObject skillGO)
         {

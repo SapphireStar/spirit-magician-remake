@@ -27,7 +27,6 @@ namespace ElfWizard
         public bool isAttacking;
         private Vector3 originPos;
         public bool isDead;
-        public bool attacked;
         [Header("ElfID")]
         public int ElfID;//TODO使用playercontroller更改生成的精灵的ID
 
@@ -136,12 +135,12 @@ namespace ElfWizard
         {
             //准备技能
             //生成技能
-            attacked = false;
+/*            attacked = false;
             if (GetComponentsInChildren<SkillDeployer>().Length > 0)//若精灵的技能是长时间在场的，则当该精灵再次使用技能时，不需要再次生成一个技能预制体
             {
                 attacked = true;
                 return;
-            }
+            }*/
             CharacterSkillSystem skillsystem = GetComponent<CharacterSkillSystem>();
                 skillsystem.UseSkill(skills[0]);
             

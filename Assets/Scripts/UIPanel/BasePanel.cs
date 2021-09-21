@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using ElfWizard.Manager;
+using Framework;
 
 namespace ElfWizard
 {
-    public class BasePanel : MonoBehaviour
+    public class BasePanel : MonoBehaviour, IController
     {
         protected UIManager uiManager;
         private GameFacade gameFacade;
@@ -47,6 +48,11 @@ namespace ElfWizard
         public virtual void OnExit()
         {
 
+        }
+
+        IArchitecture IBelongToArchitecture.getArchitecture()
+        {
+            return ElfWizardArch.Instance;
         }
     }
 }

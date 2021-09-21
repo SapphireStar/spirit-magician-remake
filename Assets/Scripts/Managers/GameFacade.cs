@@ -62,13 +62,13 @@ namespace ElfWizard
 
 
 
-            battleManager = new BattleManager(this);
+            //battleManager = new BattleManager(this);
             spawnManager = GameObject.FindObjectOfType<SpawnManager>();
-            requestManager = new RequestManager(this);
+/*            requestManager = new RequestManager(this);
            // clientManager = new ClientManager(this);
             uiManager = new UIManager(this);
             BSManager = new BattleSceneManager(this);
-            audioManager = new AudioManager(this);
+            audioManager = new AudioManager(this);*/
             //testLogin = gameObject.GetComponent<Test>();
 
             InitManagers();
@@ -89,12 +89,12 @@ namespace ElfWizard
 
                 spawnManager.OnInit();
             }
-            //battleManager.OnInit();
+/*            //battleManager.OnInit();
             uiManager.OnInit();
             //BSManager.OnInit();
             requestManager.OnInit();
             audioManager.OnInit();
-            //clientManager.OnInit();
+            //clientManager.OnInit();*/
             if(SceneManager.GetActiveScene().name== "MainMenu")
             {
                 uiManager.PushPanel(UIPanelType.Start);
@@ -161,7 +161,12 @@ namespace ElfWizard
         }
         public List<Spirit> GetUnitSpirits(BattleUnit unit)
         {
-            return ProtobufManager.GetUnitSpirits(unit);
+            List<Spirit> spirits = new List<Spirit>();
+            foreach (var item in unit.Spirits)
+            {
+                spirits.Add(item);
+            }
+            return spirits;
         }
 
         public void LoadSceneAsync(string sceneToLoad, Action Initializations, BattleInfo battleInfo = null)

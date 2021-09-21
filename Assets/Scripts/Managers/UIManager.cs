@@ -2,19 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using Framework;
 
 namespace ElfWizard.Manager
 {
-    public class UIManager: BaseManagerNonMono
+    public interface IUISystem : ISystem 
     {
-        public UIManager(GameFacade gameFacade): base(gameFacade)
+
+    }
+
+    public class UIManager: BaseManagerSystem,IUISystem
+    {
+
+        protected override void OnInit()
         {
 
             ParseUIPanelTypeJson();
-        }
-        public override void OnInit()
-        {
-            base.OnInit();
             PushPanel(UIPanelType.Message);
             //PushPanel(UIPanelType.Start);
         }
@@ -122,7 +125,7 @@ namespace ElfWizard.Manager
                 GameObject instPanel = GameObject.Instantiate(Resources.Load(path)) as GameObject;
                 instPanel.transform.SetParent(CanvasTransform, false);
                 instPanel.GetComponent<BasePanel>().UImanager = this;
-                instPanel.GetComponent<BasePanel>().GameFacade = facade;
+                //instPanel.GetComponent<BasePanel>().GameFacade = facade;
                 panelDict.Add(panelType, instPanel.GetComponent<BasePanel>());
                 return instPanel.GetComponent<BasePanel>();
             }
@@ -179,6 +182,11 @@ namespace ElfWizard.Manager
         public void Test()
         {
             
+        }
+
+        public override void OnDestroy()
+        {
+            throw new NotImplementedException();
         }
     }
 }

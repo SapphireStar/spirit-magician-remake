@@ -5,12 +5,20 @@ using ElfWizard.Manager;
 using PbBattle;
 using Base;
 using PbSpirit;
-
+using Framework;
+using ElfWizard.Model;
+using ElfWizard.Events;
 
 namespace ElfWizard
 {
-    public class BattleSceneManager : BaseManagerNonMono
+    public interface IBattleSceneSystem : ISystem
     {
+
+    }
+    public class BattleSceneManager : BaseManagerSystem,IBattleSceneSystem
+    {
+        IBattleModel battleModel;
+
         public string ID;
         public int roundNum;
         public List<int> specialEffects;
@@ -27,15 +35,12 @@ namespace ElfWizard
         /// </summary>
         /// <param name="gameFacade"></param>
         /// <param name="battleInfo"></param>
-        public BattleSceneManager(GameFacade gameFacade): base(gameFacade)
-        {
 
-        }
-        public override void OnInit()//TODO:后期修改各信息的赋值方式
+        protected override void OnInit()//TODO:后期修改各信息的赋值方式
         {
-
+            battleModel = this.GetModel<IBattleModel>() ;
             battleManager = GameFacade.Instance.battleManager;
-            battleInfo = battleManager.battleInfo;
+            battleInfo = (this.GetModel<IBattleModel>() as BattleModel).battleInfo;
             Debug.Log(battleManager.battleInfo.MapID);
             mapID = battleInfo.MapID;
             playerUnit = battleInfo.Players[0];
@@ -60,7 +65,6 @@ namespace ElfWizard
                 battleManager.playerBattleInfo.Uid = battleInfo.Players[0].UserBaseInfo.Uid;
                 battleManager.enemyBattleInfo.Uid = battleInfo.Players[1].UserBaseInfo.Uid;
                 InitSpiritPackage();
-                base.OnInit();
 
             
 
@@ -77,12 +81,15 @@ namespace ElfWizard
             {
                 enemytmp.Add(item);
             }
-            facade.InitPlayerPackage(playertmp, enemytmp);
+            this.SendEvent<InitPlayerElfPackageEvent>(new InitPlayerElfPackageEvent()//发送初始化精灵事件，并将玩家的精灵赋值给事件对象
+            {
+                playerElfs = playertmp,
+                enemyElfs = enemytmp
+            }) ;
         }
 
         public override void OnDestroy()
         {
-            base.OnDestroy();
         }
 
     }

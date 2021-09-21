@@ -4,12 +4,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using PbBattle;
 using ElfWizard.Manager;
+using ElfWizard.Events;
+using Framework;
 
 namespace ElfWizard {
+    public interface IBattleUIController:IController
+    {
+
+    }
     /// <summary>
     /// 用于显示战斗信息
     /// </summary>
-    public class BattleUIPanel : BasePanel
+    public class BattleUIPanel : BasePanel, IBattleUIController
     {
         public Slider playerHealthBar;
         public Slider enemyHealthBar;
@@ -26,6 +32,7 @@ namespace ElfWizard {
         public override void OnEnter()
         {
             base.OnEnter();
+            GameStartEvent.Register(OnGameStart);
             battleManager = GameFacade.Instance.battleManager;
             playerHealthBar.maxValue = battleManager.playerBattleInfo.Hp;
             enemyHealthBar.maxValue = battleManager.enemyBattleInfo.Hp;
@@ -34,6 +41,19 @@ namespace ElfWizard {
             //playerAvatar.sprite= ResourceManager.Load<Sprite>("playerAvatarName");
             //playerFrame.sprite= ResourceManager.Load<Sprite>("playerFrameName");
             
+        }
+        private void OnGameStart()
+        {
+            StartCoroutine(GameStart());
+        }
+        IEnumerator GameStart()
+        {
+              GameObject GameStartUI = transform.parent.Find("GameStart").gameObject;
+              Debug.Log(GameStartUI.name);
+              GameStartUI.SetActive(true);
+              yield return new WaitForSeconds(2);
+              GameStartUI.SetActive(false);
+
         }
         public void InitBattlePanel(float playerHp,float enemyHp)
         {

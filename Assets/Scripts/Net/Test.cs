@@ -13,8 +13,10 @@ using PbBattle;
 using Newtonsoft.Json;
 using System;
 using System.Reflection;
+using Framework;
+using ElfWizard.Model;
 
-public class Test : MonoBehaviour
+public class Test : MonoBehaviour,IController
 {//http://35.172.239.23:15201/gamelogin
     public string webIPPort = "35.172.239.23:15201";//"35.172.239.23:25001"
     public string sockectIP = "35.172.239.23";//"35.172.239.23";//
@@ -111,13 +113,16 @@ public class Test : MonoBehaviour
         Debug.Log("------ PbLoginS2CEnterGame -----");
         S2C_EnterGame eg = S2C_EnterGame.Parser.ParseFrom(obj.ToByteArray());
         Userdata.Instance.userdata = obj;
-        GameFacade.Instance.LoadSceneAsync
-        ("map01", //TODO:未来需要根据服务器数据来更改将要进入的地图
+
+        this.SendCommand<EnterSceneCommand>(new EnterSceneCommand { MapName = this.GetModel<IBattleModel>().MapName });
+/*        GameFacade.Instance.LoadSceneAsync*/
+/*        ("map01", //TODO:未来需要根据服务器数据来更改将要进入的地图
         () =>
         {
-            GameFacade.Instance.battleManager.OnInit();
-            GameFacade.Instance.BSManager.OnInit();
-        });
+
+*//*            GameFacade.Instance.battleManager.OnInit();
+            GameFacade.Instance.BSManager.OnInit();*//*
+        });*/
 
         setUpUserBaseInfo();//给当前类中的userBaseInfo赋值
 
@@ -362,5 +367,11 @@ public class Test : MonoBehaviour
                 Debug.LogError(pages[page] + ": Error: " + webRequest.error);
             }
         }
+    }
+    IArchitecture mArchitecture;
+
+    IArchitecture IBelongToArchitecture.getArchitecture()
+    {
+        return ElfWizardArch.Instance;
     }
 }

@@ -9,19 +9,22 @@ using System.Text;
 using ElfWizard.Manager;
 
 namespace ElfWizard {
+
     /// <summary>
     /// 用于管理服务器端的Socket连接
     /// </summary>
-    public class ClientManager : BaseManagerNonMono
+   
+
+    public class ClientManager : BaseManagerSystem
     {
         private const string IP = "127.0.0.1";
         private const int PORT = 1145;
         private Socket clientSocket;
         private Message msg;
-        public ClientManager(GameFacade gameFacade) : base(gameFacade) { }
-        public override void OnInit()
+
+        protected override void OnInit()
         {
-            base.OnInit();
+
             msg = new Message();
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             Start();
@@ -59,7 +62,7 @@ namespace ElfWizard {
         }
         private void processDataCallback(ActionCode actionCode, string data)
         {
-            facade.HandleResponse(actionCode, data);
+            //facade.HandleResponse(actionCode, data);
         }
 
         /// <summary>
@@ -78,7 +81,6 @@ namespace ElfWizard {
         /// </summary>
         public override void OnDestroy()
         {
-            base.OnDestroy();
             try
             {
                 clientSocket.Close();

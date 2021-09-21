@@ -21,9 +21,6 @@ namespace ElfWizard
         }
         public void UseSkill(int id)
         {
-
-            Debug.Log("------技能ID: " + id+"------");
-            Debug.Log(skillManager.skills);
                 skill = skillManager.PrepareSkill(id);
                 if (skill == null) return;
                 //播放动画

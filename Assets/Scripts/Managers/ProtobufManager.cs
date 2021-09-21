@@ -8,9 +8,9 @@ using PbSpirit;
 
 namespace ElfWizard.Manager
 {
-    public class ProtobufManager : BaseManagerNonMono
+    public class ProtobufManager : BaseManagerSystem
     {
-        public ProtobufManager(GameFacade gameFacade) : base(gameFacade) { }
+
         public static void SendBattleType(BattleType type)
         {
 
@@ -55,6 +55,14 @@ namespace ElfWizard.Manager
 
         }
 
-        
+        public override void OnDestroy()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override void OnInit()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
