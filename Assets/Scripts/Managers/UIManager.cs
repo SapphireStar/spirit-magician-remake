@@ -1,44 +1,29 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System;
 using Framework;
 
-namespace ElfWizard.Manager
-{
-    public interface IUISystem : ISystem 
-    {
 
+namespace ElfWizard
+{
+    public interface IUISystem : ISystem
+    {
+        public void PushPanel(UIPanelType panelType);
+        public void PopPanel();
+        public void ShowMessageAsync(string msg);
+        public void ShowMessage(string msg);
+
+        public void InjectMsgPanel(MessagePanel msgPanel);
     }
 
-    public class UIManager: BaseManagerSystem,IUISystem
+    public class UIManager: AbstractSystem ,IUISystem
     {
 
         protected override void OnInit()
         {
-
             ParseUIPanelTypeJson();
             PushPanel(UIPanelType.Message);
-            //PushPanel(UIPanelType.Start);
         }
-        /// 
-        /// 单例模式的核心
-        /// 1，定义一个静态的对象 在外界访问 在内部构造
-        /// 2，构造方法私有化
-/*
-        private static UIManager _instance;
-
-        public static UIManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new UIManager();
-                }
-                return _instance;
-            }
-        }*/
 
         private Transform canvasTransform;
         private Transform CanvasTransform
@@ -124,8 +109,7 @@ namespace ElfWizard.Manager
                 string path = panelPathDict.TryGet(panelType);
                 GameObject instPanel = GameObject.Instantiate(Resources.Load(path)) as GameObject;
                 instPanel.transform.SetParent(CanvasTransform, false);
-                instPanel.GetComponent<BasePanel>().UImanager = this;
-                //instPanel.GetComponent<BasePanel>().GameFacade = facade;
+
                 panelDict.Add(panelType, instPanel.GetComponent<BasePanel>());
                 return instPanel.GetComponent<BasePanel>();
             }
@@ -155,7 +139,6 @@ namespace ElfWizard.Manager
 
             foreach (UIPanelInfo info in jsonObject.infoList)
             {
-                //Debug.Log(info.panelType);
                 panelPathDict.Add(info.panelType, info.path);
             }
         }
@@ -176,17 +159,24 @@ namespace ElfWizard.Manager
             }
             msgPanel.ShowMessage(msg);
         }
-        /// <summary>
-        /// just for test
-        /// </summary>
-        public void Test()
+
+        public void OnDestroy()
         {
-            
+           
         }
 
-        public override void OnDestroy()
+        IArchitecture IBelongToArchitecture.getArchitecture()
         {
-            throw new NotImplementedException();
+            return ElfWizardArch.Instance;
         }
+
+
+        IArchitecture mArchitecture;
+        public void setArchitecture(IArchitecture architecture)
+        {
+            mArchitecture = architecture;
+        }
+
+
     }
 }

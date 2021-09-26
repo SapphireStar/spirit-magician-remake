@@ -235,7 +235,7 @@ namespace ElfWizard.Manager
                 }
             }
 
-            battleManager.currentTurn.AddElf(elf[UnityEngine.Random.Range(0, elf.Count)],level,0);
+            //battleManager.currentTurn.AddElf(elf[UnityEngine.Random.Range(0, elf.Count)],level,0);
         }
         public void SetCurrentTurn(BattleState state)
         {

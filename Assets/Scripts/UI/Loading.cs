@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Framework;
-using ElfWizard.Model;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,9 +18,9 @@ namespace ElfWizard {
         {
             async = SceneManager.LoadSceneAsync(ElfWizardArch.Instance.GetModel<IBattleModel>().MapName);
             yield return async;
-            GameFacade.Instance.Init();
-            Constants.action();
-            Constants.action = () => { };
+            //GameFacade.Instance.Init();
+/*            Constants.action();
+            Constants.action = () => { };*/
             Destroy(gameObject);
         }
 

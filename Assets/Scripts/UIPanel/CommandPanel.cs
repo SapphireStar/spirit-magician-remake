@@ -9,7 +9,9 @@ using Google.Protobuf;
 using PbSpirit;
 using System.Reflection;
 using System;
-public class CommandPanel : BasePanel
+using Framework;
+
+public class CommandPanel : BasePanel,IController
 {
     public InputField IF;
     public Text text;
@@ -17,11 +19,12 @@ public class CommandPanel : BasePanel
     private RectTransform trans;
     private List<string> history = new List<string>();
     private int histIndex;
-
+    private IUISystem uiSystem;
    
 
     public override void OnEnter()
     {
+        uiSystem = this.GetSystem<IUISystem>();
         gameObject.SetActive(true);
         trans = GetComponent<RectTransform>();
         base.OnEnter();
@@ -34,7 +37,7 @@ public class CommandPanel : BasePanel
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            GameFacade.Instance.uiManager.PopPanel();
+            uiSystem.PopPanel();
         }
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
@@ -136,11 +139,11 @@ public class CommandPanel : BasePanel
         }
 
     }
-    public static void userdata(object[] s)
+    public void userdata(object[] s)
     {
         try
         {
-            GameFacade.Instance.uiManager.PushPanel(UIPanelType.Userdata);
+            uiSystem.PushPanel(UIPanelType.Userdata);
         }
         catch (Exception e)
         {
@@ -148,7 +151,7 @@ public class CommandPanel : BasePanel
         }
 
     }
-    public static void serverba(object[] s)
+    public void serverba(object[] s)
     {
         string[] commands = new string[s.Length];
         for (int i = 0; i < s.Length; i++)
@@ -168,7 +171,7 @@ public class CommandPanel : BasePanel
         IMessage obj = battleAction;
         BattleRequest.OnResponse(obj);
     }
-    public static void clientba(object[] s)
+    public void clientba(object[] s)
     {
         string[] commands = new string[s.Length];
         for (int i = 0; i < s.Length; i++)
@@ -177,7 +180,7 @@ public class CommandPanel : BasePanel
         }
         C2S_BattleAction battleAction = new C2S_BattleAction();
         battleAction.ActionType = (BattleActionType)int.Parse(commands[0]);
-        battleAction.TargetUID = GameFacade.Instance.battleManager.curRoundInfo.ActiveUID;
+        battleAction.TargetUID = this.GetModel<IBattleModel>().curRoundInfo.ActiveUID;
         //Debug.Log("------>Active UID: "+GameFacade.Instance.curRoundInfo.ActiveUID);
 
         if (commands.Length > 1)
@@ -188,19 +191,21 @@ public class CommandPanel : BasePanel
             {
                 temp[i] =int.Parse(commands[i + 1]);
             }
-            GameFacade.Instance.SendBattleAction((BattleActionType)int.Parse(commands[0]), temp);
-        }
-        GameFacade.Instance.SendBattleAction((BattleActionType)int.Parse(commands[0]));
-/*        battleAction.RoundIndex = GameFacade.Instance.curRoundInfo.RoundIndex;
-        battleAction.TargetUID = GameFacade.Instance.enemyBattleInfo.Uid;
-        if (s.Length > 1)
-        {
-            for (int i = 1; i < s.Length; i++)
+            this.SendCommand<SendBattleActionCommand>(new SendBattleActionCommand()
             {
-                battleAction.LockedDices.Add((int)s[i]);
-            }
+                battleActionType = (BattleActionType)int.Parse(commands[0]),
+                diceLocked = temp
+            }) ;
+            GameFacade.Instance.SendBattleAction((BattleActionType)int.Parse(commands[0]), temp);
+            Debug.Log("send battleaction: " + Enum.GetName(typeof(BattleActionType), battleAction.ActionType));
+            return;
         }
-        NetManager.Instance.Send(battleAction);*/
+        this.SendCommand<SendBattleActionCommand>(new SendBattleActionCommand()
+        {
+            battleActionType = (BattleActionType)int.Parse(commands[0])
+        });
+
+
         Debug.Log("send battleaction: " + Enum.GetName(typeof( BattleActionType), battleAction.ActionType));
 
     }

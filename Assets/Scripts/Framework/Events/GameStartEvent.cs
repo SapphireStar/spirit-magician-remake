@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using ElfWizard.Util;
 
-namespace ElfWizard.Events
+namespace Framework
 {
-    public class GameStartEvent : Event<GameStartEvent>
+    public class GameStartEvent
     {
 
     }

@@ -7,24 +7,24 @@ namespace ElfWizard
 {
     public class BasePanel : MonoBehaviour, IController
     {
-        protected UIManager uiManager;
+        protected IUISystem uiManager;
+/*        protected UIManager uiManager;
         private GameFacade gameFacade;
         public UIManager UImanager
         {
             set { uiManager = value; }
         }
-        public GameFacade GameFacade { set { gameFacade = value; } }
+        public GameFacade GameFacade { set { gameFacade = value; } }*/
         /// <summary>
         /// 界面被显示出来
         /// </summary>
         public virtual void OnEnter()
         {
-
+            uiManager = this.GetSystem<IUISystem>();
         }
         protected void PlayClickSound()
         {
-            GameFacade.Instance.audioManager.PlayNormalSound("ButtonClick");
-            //gameFacade.PlayNormalSound(AudioManager.Sound_ButtonClick);
+            this.GetSystem<IAudioSystem>().PlayNormalSound("ButtonClick");
         }
         /// <summary>
         /// 界面暂停

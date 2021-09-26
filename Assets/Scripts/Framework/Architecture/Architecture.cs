@@ -73,6 +73,7 @@ namespace Framework
             makeSureArchitecture();
             return mArchitecture.mContainer.Get<T>();
         }
+        [Obsolete(" π”√RegisterModel,RegisterSystemªÚRegisterEvent")]
         public static void Register<T>(T Instance)
         {
             makeSureArchitecture();
@@ -120,6 +121,7 @@ namespace Framework
             }
             else
             {
+                Debug.Log("init");
                 system.Init();
             }
         }

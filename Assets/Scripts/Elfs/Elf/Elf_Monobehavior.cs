@@ -10,7 +10,6 @@ namespace ElfWizard
     public class Elf_Monobehavior : MonoBehaviour, IDamagable,IBuffer
     {
 
-        private Vector3 currentTarget;
         [Header("Elf Properties")]
         public float MoveSpeed = 5;
         public float health = 5;
@@ -39,59 +38,10 @@ namespace ElfWizard
         // Start is called before the first frame update
         void Start()
         {
-
-
             AttackState = 0;
-            originPos = transform.position;
-            currentTarget = transform.position;
-        }
-        
-        // Update is called once per frame
-        void Update()
-        {
-            if (!isDead)
-            {
-               // gotoTarget();
-            }
 
         }
-/*        private void gotoTarget()
-        {
-
-
-            if (!(Vector3.Magnitude(transform.position - currentTarget) < 0.01) && currentTarget != null)
-            {
-                anim.SetFloat("AnimState", 3);
-                transform.position = Vector3.MoveTowards(transform.position, currentTarget, MoveSpeed * Time.deltaTime);
-
-            }
-            else if ((Vector3.Magnitude(transform.position - currentTarget) < 0.01) && isAttacking)
-            {
-                anim.SetTrigger("Attack");
-                isAttacking = false;//这时isAttacking变为false，精灵会继续移动，需要解决该问题
-
-
-            }
-
-            else if ((Vector3.Magnitude(transform.position - currentTarget) < 0.01))
-            {
-                anim.SetFloat("AnimState", 1);
-            }
-
-        }*/
-        public void BacktoOrigin()
-        {
-            currentTarget = originPos;
-            isAttacking = false;//触发Attack后，Attack将isAttacking设置为TRUE，然后由于在一瞬间完成，这里的else if语句通过判定被调用，
-        }
-        public void SwitchTarget(Vector3 target)
-        {
-            if (!isDead)
-            {
-                anim.SetFloat("AnimState", 3);
-                currentTarget = target;
-            }
-        }
+       
 
         public void GetHit(float health)
         {
@@ -112,7 +62,7 @@ namespace ElfWizard
         IEnumerator removeThis()
         {
             yield return new WaitForSeconds(2);
-            transform.parent.parent.GetComponent<NewPlayerController>().RemoveElf(gameObject);
+            //transform.parent.parent.GetComponent<NewPlayerController>().RemoveElf(gameObject);
         }
 
         public Vector3 GetBeAttackPlace()
@@ -124,11 +74,6 @@ namespace ElfWizard
                 return pos + new Vector3(0, 0, -1);
             }
             else return pos + new Vector3(0, 0, 1);
-        }
-        public void Init()
-        {
-            currentTarget = transform.position;
-            originPos = transform.position;
         }
 
         public void UseSkill()

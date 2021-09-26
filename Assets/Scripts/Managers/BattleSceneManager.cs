@@ -6,7 +6,6 @@ using PbBattle;
 using Base;
 using PbSpirit;
 using Framework;
-using ElfWizard.Model;
 using ElfWizard.Events;
 
 namespace ElfWizard

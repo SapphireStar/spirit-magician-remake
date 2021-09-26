@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Framework;
 using UnityEngine;
 using ElfWizard;
+using UnityEngine.SceneManagement;
 
 namespace Framework
 {
@@ -11,8 +12,9 @@ namespace Framework
         public string MapName;
         protected override void OnExecute()
         {
-            this.GetSystem<IBattleSceneSystem>().Init();
-            this.GetSystem<IBattleSystem>().Init();
+
+            SceneManager.LoadScene("Loading");
+
         }
     }
 }

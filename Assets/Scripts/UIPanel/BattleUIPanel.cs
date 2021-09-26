@@ -31,18 +31,20 @@ namespace ElfWizard {
         }
         public override void OnEnter()
         {
-            base.OnEnter();
-            GameStartEvent.Register(OnGameStart);
-            battleManager = GameFacade.Instance.battleManager;
-            playerHealthBar.maxValue = battleManager.playerBattleInfo.Hp;
-            enemyHealthBar.maxValue = battleManager.enemyBattleInfo.Hp;
-            playerHealthBar.value = playerHealthBar.maxValue;
-            enemyHealthBar.value = enemyHealthBar.maxValue;
-            //playerAvatar.sprite= ResourceManager.Load<Sprite>("playerAvatarName");
-            //playerFrame.sprite= ResourceManager.Load<Sprite>("playerFrameName");
-            
+            this.RegisterEvent<GameStartEvent>(OnGameStart);
+            this.GetModel<IBattleModel>().ToString();
+
+            this.GetModel<IBattleModel>().PlayerHP.OnValueChanged += (value) =>
+            {
+                playerHealthBar.value = value;
+            };
+            this.GetModel<IBattleModel>().EnemyHP.OnValueChanged += (value) =>
+            {
+                enemyHealthBar.value = value;
+            };
+
         }
-        private void OnGameStart()
+        private void OnGameStart(GameStartEvent e)
         {
             StartCoroutine(GameStart());
         }
@@ -62,27 +64,10 @@ namespace ElfWizard {
             playerHealthBar.value = playerHealthBar.maxValue;
             enemyHealthBar.value = enemyHealthBar.maxValue;
         }
-        public void UpdateHealthBar(BattleRoundInfo info)
+
+        public void UpdateHealthBar()
         {
-            /*            if (player.tag == "Player")
-                        {
-                            playerHealthBar.value = info.;
-                        }
-                        else if (player.tag == "Enemy")
-                        {
-                            enemyHealthBar.value -= health;
-                        }*/
-            foreach (var item in info.PlayerBattleInfos)
-            {
-                if (item.Uid == battleManager.playerBattleInfo.Uid)
-                {
-                    playerHealthBar.value = item.Hp;
-                }
-                else if (item.Uid == battleManager.enemyBattleInfo.Uid)
-                {
-                    enemyHealthBar.value = item.Hp;
-                }
-            }
+
         }
 
         public override void OnExit()

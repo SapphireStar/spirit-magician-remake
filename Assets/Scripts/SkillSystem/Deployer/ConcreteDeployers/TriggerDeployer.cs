@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using ElfWizard.Manager;
 using Framework;
-using ElfWizard.Model;
 
 namespace ElfWizard
 {
@@ -17,7 +16,7 @@ namespace ElfWizard
         {
             //StartCoroutine(WaitSkillDeployed());
             isDeployed = true;
-            Framework.ElfWizardArch.Get<BattleModel>().currentTurnElfs.Value++;
+            Framework.ElfWizardArch.Get<BattleModel>().RemainAttackElfs.Value++;
         }
         public override void DeploySkill(GameObject skillGO)
         {

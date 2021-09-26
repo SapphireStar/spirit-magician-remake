@@ -5,10 +5,12 @@ using DG.Tweening;
 using UnityEngine.UI;
 using Common;
 using UnityEngine.SceneManagement;
+using Framework;
+using ElfWizard.Commands;
 
-namespace ElfWizard
+namespace ElfWizard.Controller
 {
-    public class LoginPanel : BasePanel
+    public class LoginPanel : BasePanel,IController
     {
         private Button closeButton;
         private InputField username_IF;
@@ -17,7 +19,6 @@ namespace ElfWizard
         private Button registerButton;
         //private LoginRequest loginRequest;
         private bool successLogin;
-        private Test testnet;
         private void Update()
         {
             if (successLogin)
@@ -28,9 +29,8 @@ namespace ElfWizard
         }
         public override void OnEnter()
         {
-            base.OnEnter();
 
-            testnet = GameFacade.Instance.testnet;
+
             gameObject.SetActive(true);
             transform.localScale = Vector3.zero;
             transform.DOScale(1, 0.4f);
@@ -43,37 +43,35 @@ namespace ElfWizard
             transform.Find("LoginButton").GetComponent<Button>().onClick.AddListener(OnLoginClick);
             transform.Find("RegisterButton").GetComponent<Button>().onClick.AddListener(OnRegisterClick);
             transform.Find("EnterButton").GetComponent<Button>().onClick.AddListener(OnEnterClick);
-
-            //loginRequest = GetComponent<LoginRequest>();
-            //testLogin = GetComponent<Test>();
-            testnet.Init();
             closeButton.onClick.AddListener(OnCloseClick);
         }
         private void OnLoginClick()
         {
             PlayClickSound();
-/*            string msg = "";
-            if (string.IsNullOrEmpty(username_IF.text))
-            {
-                msg += "用户名不能为空 ";
-            }
-            if (string.IsNullOrEmpty(password_IF.text))
-            {
-                msg += "密码不能为空";
-            }
-            if (!string.IsNullOrEmpty(msg))
-            {
-                uiManager.ShowMessage(msg);
-                msg = "";
-                return;
-            }*/
+            /*            string msg = "";
+                        if (string.IsNullOrEmpty(username_IF.text))
+                        {
+                            msg += "用户名不能为空 ";
+                        }
+                        if (string.IsNullOrEmpty(password_IF.text))
+                        {
+                            msg += "密码不能为空";
+                        }
+                        if (!string.IsNullOrEmpty(msg))
+                        {
+                            uiManager.ShowMessage(msg);
+                            msg = "";
+                            return;
+                        }*/
             //loginRequest.SendRequest(username_IF.text, password_IF.text);
-            StartCoroutine(testnet.doLogin());
+            this.SendCommand<LoginCommand>();
         }
         private void OnEnterClick()
         {
             PlayClickSound();
-            testnet.OnEnterGameClicked();
+            this.SendCommand<EnterGameCommand>();
+            //testnet.OnEnterGameClicked();
+
             
         }
         private void OnRegisterClick()

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Framework;
 
 namespace ElfWizard
 {
-    public class StartPanel : BasePanel
+    public class StartPanel : BasePanel,IController
     {
         Button loginButton;
         Animator anim;
@@ -20,7 +21,7 @@ namespace ElfWizard
         }
         private void OnLoginClick()
         {
-            uiManager.PushPanel(UIPanelType.Login);
+            this.GetSystem<IUISystem>().PushPanel(UIPanelType.Login);
             PlayClickSound();
 
         }

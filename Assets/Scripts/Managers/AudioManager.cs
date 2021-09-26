@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using ElfWizard.Manager;
 using Framework;
 using UnityEngine;
 
-namespace ElfWizard.Manager
+namespace ElfWizard
 {
     public interface IAudioSystem : ISystem
     {
-
+        public void PlayBgSound(string soundname);
+        public void PlayNormalSound(string soundname);
     }
     public class AudioManager : BaseManagerSystem, IAudioSystem
     {
@@ -38,7 +40,7 @@ namespace ElfWizard.Manager
         }
         private AudioClip LoadSound(string soundName)
         {
-            return ResourceManager.Load<AudioClip>(soundName);
+            return ResourceManager.LoadObsolete<AudioClip>(soundName);
 
         }
 

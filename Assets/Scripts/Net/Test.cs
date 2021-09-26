@@ -14,7 +14,6 @@ using Newtonsoft.Json;
 using System;
 using System.Reflection;
 using Framework;
-using ElfWizard.Model;
 
 public class Test : MonoBehaviour,IController
 {//http://35.172.239.23:15201/gamelogin
@@ -39,7 +38,7 @@ public class Test : MonoBehaviour,IController
     // Start is called before the first frame update
     void Start()
     {
-
+        Init();
 
     }
     public void Init()
@@ -62,6 +61,9 @@ public class Test : MonoBehaviour,IController
 
         NetManager.Instance.RegistListener(EDict.PbBattleS2CBattleAction, this.PbBattleS2CUpdateBattleAction);
         NetManager.Instance.RegistListener(EDict.PbBattleS2CUpdateBattleAction, this.PbBattleS2CUpdateBattleAction);//TODO:添加EnterGame回调
+
+        this.RegisterEvent<LoginEvent>(OnLoginClicked);
+        this.RegisterEvent<EnterGameEvent>(OnEnterGameClicked);
         //NetManager.Instance.RegistListener(EDict.PbBattleS2CBattleEnd, this.PbBattleS2CUpdateBattleAction);
         //NetManager.Instance.RegistListener(EDict.PbQueryS2CQueryBattleState, BattleRequest.OnResponse);
         // NetManager.Instance.RegistListener(EDict.PbLoginS2CEnterGame, (message) => Debug.Log("entergame: "));
@@ -112,25 +114,17 @@ public class Test : MonoBehaviour,IController
     {
         Debug.Log("------ PbLoginS2CEnterGame -----");
         S2C_EnterGame eg = S2C_EnterGame.Parser.ParseFrom(obj.ToByteArray());
-        Userdata.Instance.userdata = obj;
 
-        this.SendCommand<EnterSceneCommand>(new EnterSceneCommand { MapName = this.GetModel<IBattleModel>().MapName });
-/*        GameFacade.Instance.LoadSceneAsync*/
-/*        ("map01", //TODO:未来需要根据服务器数据来更改将要进入的地图
-        () =>
-        {
-
-*//*            GameFacade.Instance.battleManager.OnInit();
-            GameFacade.Instance.BSManager.OnInit();*//*
-        });*/
-
+        this.GetModel<IUserModel>().UserData = obj;
         setUpUserBaseInfo();//给当前类中的userBaseInfo赋值
+
+        this.SendCommand<EnterSceneCommand>(new EnterSceneCommand { MapName = this.GetModel<IBattleModel>().MapName });//通过更改MapName来更改加载的地图
 
     }
 
     void setUpUserBaseInfo()
     {
-        string json = JsonConvert.SerializeObject(Userdata.Instance.userdata);
+        string json = JsonConvert.SerializeObject(this.GetModel<IUserModel>().UserData);
         JsonData data = JsonMapper.ToObject(json);
         JsonData info = data["UserData"]["Player"]["UserBaseInfo"];
         userBaseInfo.Account =(string) info["Account"];
@@ -149,9 +143,11 @@ public class Test : MonoBehaviour,IController
         {
             Debug.Log("------S2CStartBattle------");
             battleID = ((S2C_StartBattle)obj).BattleInfo.Id;
+
+            this.GetModel<IBattleModel>().battleInfo = obj as BattleInfo;
             Debug.Log("BattleHandler ---- battleID: " + battleID);
 
-            GameFacade.Instance.battleManager.battleInfo = ((S2C_StartBattle)obj).BattleInfo;//初始化对战玩家信息,临时代码 TODO:需要修改
+            //GameFacade.Instance.battleManager.battleInfo = ((S2C_StartBattle)obj).BattleInfo;//初始化对战玩家信息,临时代码 TODO:需要修改
 
             C2S_EnterBattle msg = new C2S_EnterBattle();
             NetManager.Instance.Send(msg);
@@ -290,7 +286,7 @@ public class Test : MonoBehaviour,IController
         
     }
 
-    public void OnEnterGameClicked()
+    public void OnEnterGameClicked(EnterGameEvent e)
     {
         if (null == userInfo )//若角色为空（新用户），则开始创建角色
         {
@@ -307,7 +303,7 @@ public class Test : MonoBehaviour,IController
         }
     }
 
-    private void OnLoginClicked()
+    private void OnLoginClicked(LoginEvent e)
     {
         Debug.Log("calling web login");
 

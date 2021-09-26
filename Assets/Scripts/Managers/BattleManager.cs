@@ -5,7 +5,6 @@ using UnityEngine;
 using PbBattle;
 using Newtonsoft.Json;
 using PbSpirit;
-using ElfWizard.Model;
 using ElfWizard.Events;
 using Framework;
 using ElfWizard.Manager;
@@ -47,11 +46,11 @@ namespace ElfWizard
         }
         protected override void OnInit()
         {
-            Framework.ElfWizardArch.Get<BattleModel>().currentTurnElfs.OnValueChanged += ElfAttack;
-            GameStartEvent.Register(SetInitialState);
+            Framework.ElfWizardArch.Get<BattleModel>().RemainAttackElfs.OnValueChanged += ElfAttack;
+            this.RegisterEvent<GameStartEvent>(SetInitialState);
             Debug.Log("init");
-            player =GameObject.Instantiate(ResourceManager.Load<GameObject>("Player"), GameObject.Find("PlayerSpawnPoint").transform).GetComponent<NewPlayerController>();
-            enemy = GameObject.Instantiate(ResourceManager.Load<GameObject>("Player"), GameObject.Find("EnemySpawnPoint").transform).GetComponent<NewPlayerController>();
+            player =GameObject.Instantiate(ResourceManager.LoadObsolete<GameObject>("Player"), GameObject.Find("PlayerSpawnPoint").transform).GetComponent<NewPlayerController>();
+            enemy = GameObject.Instantiate(ResourceManager.LoadObsolete<GameObject>("Player"), GameObject.Find("EnemySpawnPoint").transform).GetComponent<NewPlayerController>();
             battleInfo = new BattleInfo();
             BattleUnit unit1 = new BattleUnit();
             BattleUnit unit2 = new BattleUnit();
@@ -85,13 +84,13 @@ namespace ElfWizard
 
         public void StartGame()
         {
-            GameStartEvent.Trigger();
+            this.SendEvent<GameStartEvent>();
             GameFacade.Instance.StartCoroutine(CountingDown());
         }
 
         public void StartAttack()
         {
-            Framework.ElfWizardArch.Get<BattleModel>().currentTurnElfs.Value = currentTurn.PlayerElfs.Count;
+            Framework.ElfWizardArch.Get<BattleModel>().RemainAttackElfs.Value = currentTurn.PlayerElfs.Count;
 
         }
         public void updateRoundInfo(BattleRoundInfo currentRI, BattleRoundInfo nextRI = null)
@@ -147,7 +146,7 @@ namespace ElfWizard
 
 
         }
-        public void SetInitialState()
+        public void SetInitialState(GameStartEvent e)
         {
             GameFacade.Instance.turn = BattleState.PLAYERTURN;
             currentTurn = player;
@@ -213,8 +212,8 @@ namespace ElfWizard
 
         public override void OnDestroy()
         {
-            Framework.ElfWizardArch.Get<BattleModel>().currentTurnElfs.OnValueChanged -= ElfAttack;
-            GameStartEvent.Unregister(SetInitialState);
+            Framework.ElfWizardArch.Get<BattleModel>().RemainAttackElfs.OnValueChanged -= ElfAttack;
+            this.UnregisterEvent<GameStartEvent>(SetInitialState);
         }
     }
 }

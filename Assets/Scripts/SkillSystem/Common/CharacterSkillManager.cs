@@ -31,7 +31,7 @@ namespace ElfWizard
             */
             //data.skillPrefab = Resources.Load<GameObject>("Skill/" + data.prefabName);
             ResourceManager manager = new ResourceManager();
-            data.skillPrefab = ResourceManager.Load<GameObject>(data.prefabName);
+            data.skillPrefab = ResourceManager.LoadObsolete<GameObject>(data.prefabName);
             data.owner = gameObject;
         }
 

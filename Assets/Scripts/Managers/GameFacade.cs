@@ -8,10 +8,11 @@ using PbBattle;
 using System.IO;
 using PbSpirit;
 using System;
+using Framework;
 
 namespace ElfWizard
 {
-    public class GameFacade : MonoBehaviour
+    public class GameFacade : MonoBehaviour,IController
     {
         /// <summary>
         /// battle Informations
@@ -59,9 +60,6 @@ namespace ElfWizard
         }
         public void Init()
         {
-
-
-
             //battleManager = new BattleManager(this);
             spawnManager = GameObject.FindObjectOfType<SpawnManager>();
 /*            requestManager = new RequestManager(this);
@@ -112,7 +110,7 @@ namespace ElfWizard
         }
         public void SendBattleAction(BattleActionType actionType, int[] lockedDices = null)
         {
-            testnet.SendBattleAction(actionType, lockedDices);
+           // testnet.SendBattleAction(actionType, lockedDices);
         }
         public void RollElement()
         {
@@ -184,7 +182,7 @@ namespace ElfWizard
             float height = Screen.height;
             float currentWidth =(float) offset.x * width / 1080.0f;
             float currentHeight = (float)offset.y * height / 1920.0f;*/
-            GameObject hitUI = GameObjectPool.Instance.CreateObject("HitUI", ResourceManager.Load<GameObject>("HitUI"), _position + offset, Quaternion.identity);
+            GameObject hitUI = GameObjectPool.Instance.CreateObject("HitUI", ResourceManager.LoadObsolete<GameObject>("HitUI"), _position + offset, Quaternion.identity);
             hitUI.GetComponent<HitAnim>().SetDamage(damage);
         }
         public void AddRequest(ActionCode actionCode, BaseRequest request)
@@ -229,6 +227,9 @@ namespace ElfWizard
 
         }
 
-
+        IArchitecture IBelongToArchitecture.getArchitecture()
+        {
+            return ElfWizardArch.Instance;
+        }
     }
 }

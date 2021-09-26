@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.IO;
+using Framework;
 using System.Text;
-
-public class ResourceManager
+public interface IResourceUtility : IUtility
 {
+    T Load<T>(string prefabName) where T : Object;
+}
+public class ResourceManager:IResourceUtility
+{
+
     //作用：初始化类的静态数据成员
     //时机：类被加载时执行
     private static Dictionary<string, string> configMap;
@@ -99,10 +104,15 @@ public class ResourceManager
        // reader.Dispose();
 
     }
-
-    public static T Load<T>(string prefabName) where T:Object//泛型方法需要加此声明
+    public static T LoadObsolete<T>(string prefabName) where T:Object//泛型方法需要加此声明
     {
         //prefabName=>prefabPath
+        string prefabPath = configMap[prefabName];
+        return Resources.Load<T>(prefabPath);
+    }
+
+    public T Load<T>(string prefabName) where T : Object
+    {
         string prefabPath = configMap[prefabName];
         return Resources.Load<T>(prefabPath);
     }
