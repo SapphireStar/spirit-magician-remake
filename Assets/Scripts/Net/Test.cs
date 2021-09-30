@@ -156,13 +156,13 @@ public class Test : MonoBehaviour,IController
 
         if (obj is S2C_EnterBattle)
         {
-            GameFacade.Instance.StartGame();//TODO 测试用
-
-
+           // GameFacade.Instance.StartGame();//TODO 测试用
             Debug.Log("------S2CEnterBattle------");
 
+            this.SendCommand<StartBattleCommand>(new StartBattleCommand() { InitRoundInfo = obj});
+
             curRoundInfo = ((S2C_EnterBattle)obj).BattleRoundInfo;
-            GameFacade.Instance.UpdateRoundInfo(((S2C_EnterBattle)obj).BattleRoundInfo);
+            //GameFacade.Instance.UpdateRoundInfo(((S2C_EnterBattle)obj).BattleRoundInfo);
             isMyRound = (curRoundInfo.ActiveUID == userBaseInfo.Uid);
             Debug.Log("BattleHandler ---- battleActiveUID: " + curRoundInfo.ActiveUID + ", isMyRound: " + isMyRound);
 
@@ -177,7 +177,7 @@ public class Test : MonoBehaviour,IController
             }
         }
 
-/*        if (obj is S2C_UpdateBattleAction)
+        if (obj is S2C_UpdateBattleAction)
         {
             GameFacade.Instance.UpdateRoundInfo(curRoundInfo, nextRoundInfo);
             Debug.Log("----------- S2C_UpdateBattleAction ---------");
@@ -208,11 +208,11 @@ public class Test : MonoBehaviour,IController
                 {
                     if (currentPlayerElfs.ContainsKey(item.Uid))
                     {
-                        GameFacade.Instance.currentTurn.AddElf(currentPlayerElfs[item.Uid],0);
+                        
                     }
 
                 }
-                GameFacade.Instance.StartAttack();
+
                 Debug.Log("对攻击进行表现");
                 foreach (var bu in curRoundInfo.PlayerBattleInfos)
                 {
@@ -244,7 +244,7 @@ public class Test : MonoBehaviour,IController
                     StartCoroutine(DelaySendBattleAction(BattleActionType.BatAttack));
                 }
             }
-        }*/
+        }
 
         if (obj is S2C_BattleEnd)
         {

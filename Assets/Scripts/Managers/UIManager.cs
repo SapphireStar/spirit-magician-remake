@@ -8,7 +8,7 @@ namespace ElfWizard
 {
     public interface IUISystem : ISystem
     {
-        public void PushPanel(UIPanelType panelType);
+        public GameObject PushPanel(UIPanelType panelType);
         public void PopPanel();
         public void ShowMessageAsync(string msg);
         public void ShowMessage(string msg);
@@ -49,7 +49,7 @@ namespace ElfWizard
         /// <summary>
         /// 把某个页面入栈，  把某个页面显示在界面上
         /// </summary>
-        public void PushPanel(UIPanelType panelType)
+        public GameObject PushPanel(UIPanelType panelType)
         {
             if (panelStack == null)
                 panelStack = new Stack<BasePanel>();
@@ -64,6 +64,7 @@ namespace ElfWizard
             BasePanel panel = GetPanel(panelType);
             panel.OnEnter();
             panelStack.Push(panel);
+            return panel.gameObject;
         }
         /// <summary>
         /// 出栈 ，把页面从界面上移除

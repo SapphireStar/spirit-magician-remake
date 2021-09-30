@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4027919682498034780}
   - component: {fileID: 6964378768180700876}
   m_Layer: 0
-  m_Name: Nature
+  m_Name: StNature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

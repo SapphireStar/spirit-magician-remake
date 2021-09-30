@@ -28,7 +28,6 @@ namespace Framework
             {
                 player = battleModel.player;
                 enemy = battleModel.enemy;
-                Debug.Log("trigger");
             });
             playerElfList = new List<Elf_Monobehavior>(3);
             enemyElfList = new List<Elf_Monobehavior>(3);

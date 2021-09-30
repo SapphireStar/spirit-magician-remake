@@ -5,10 +5,11 @@ using Framework;
 using ElfWizard;
 public class TestAttack : MonoBehaviour
 {
+    IArchitecture instance;
     // Start is called before the first frame update
     void Start()
     {
-        
+        instance = ElfWizardArch.Instance;
     }
 
     // Update is called once per frame
@@ -16,12 +17,13 @@ public class TestAttack : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.S))
         {
-            ElfWizardArch.Instance.GetSystem<ISpawnSystem>().SpawnElf(2, new PbBattle.SkillEffect() { SkillID = "ElfFire01" });
+            instance.GetSystem<ISpawnSystem>().SpawnElf(2, new PbBattle.SkillEffect() { SkillID = "ElfFire01" });
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
-            ElfWizardArch.Instance.GetModel<IBattleModel>().currentTurn = ElfWizardArch.Instance.GetModel<IBattleModel>().enemy;
-            ElfWizardArch.Instance.SendCommand<StartAttackCommand>();
+            instance.GetModel<IBattleModel>().currentTurn = ElfWizardArch.Instance.GetModel<IBattleModel>().enemy;
+            instance.SendCommand<StartAttackCommand>();
         }
+
     }
 }

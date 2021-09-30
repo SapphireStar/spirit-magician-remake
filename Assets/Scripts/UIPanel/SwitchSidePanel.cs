@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Framework;
 
 namespace ElfWizard {
     public class SwitchSidePanel :BasePanel
@@ -11,13 +12,14 @@ namespace ElfWizard {
         {
             base.OnEnter();
             gameObject.SetActive(true);
-            SetText();
+            //SetText();
             transform.localPosition = new Vector3(801.69f, 0, 0);
             Tweener tweener = transform.DOLocalMove(new Vector3(0, 0, 0), 0.5f, false);
             tweener.OnComplete(() => transform.DOLocalMove(transform.localPosition, 0.5f, false).
-                    OnComplete(() => GameFacade.Instance.uiManager.PopPanel()));
+                    OnComplete(() => ElfWizardArch.Instance.GetSystem<IUISystem>().PopPanel()));
 
         }
+
         public override void OnExit()
         {
             base.OnExit();
@@ -25,17 +27,18 @@ namespace ElfWizard {
 
         }
 
-        public void SetText()
+        public void SetText(string txt)
         {
             Text text = GetComponentInChildren<Text>();
-            if (GameFacade.Instance.turn == BattleState.ENEMYTURN)
+            text.text = txt;
+/*            if (GameFacade.Instance.turn == BattleState.ENEMYTURN)
             {
                 text.text ="Switch To PlayerTurn";
             }
             else
             {
                 text.text = "Switch To EnemyTurn";
-            }
+            }*/
         }
     }
 

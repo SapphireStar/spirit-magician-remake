@@ -16,8 +16,8 @@ namespace Framework
         public NewPlayerController currentTurn { get; set; }
 
         #region BattleInfo
-        public BattleRoundInfo curRoundInfo { get; }
-        public BattleRoundInfo nextRoundInfo { get; }
+        public BattleRoundInfo curRoundInfo { get; set; }
+        public BattleRoundInfo nextRoundInfo { get; set; }
         public PlayerBattleInfo playerBattleInfo { get; set; }
 
 
@@ -57,8 +57,8 @@ namespace Framework
         {
             Value = -1
         };
-        public BattleRoundInfo curRoundInfo { get; }
-        public BattleRoundInfo nextRoundInfo { get; }
+        public BattleRoundInfo curRoundInfo { get; set; }
+        public BattleRoundInfo nextRoundInfo { get; set; }
         public PlayerBattleInfo playerBattleInfo { get; set; } = new PlayerBattleInfo();
 
         public PlayerBattleInfo enemyBattleInfo { get; set; } = new PlayerBattleInfo();
