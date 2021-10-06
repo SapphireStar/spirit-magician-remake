@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8394173605898198448}
   - component: {fileID: 6575961834661775512}
   - component: {fileID: 2248253623101096073}
+  - component: {fileID: -6446454533755733067}
   m_Layer: 0
   m_Name: StHoly
   m_TagString: Untagged
@@ -96,3 +97,15 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-6446454533755733067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4089779980721446490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa3770faf3141314fa7646cae8ccb08c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

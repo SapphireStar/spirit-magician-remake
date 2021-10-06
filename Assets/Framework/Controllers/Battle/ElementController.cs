@@ -16,6 +16,7 @@ namespace Framework
         }
 
         List<Transform> ElementPlaces = new List<Transform>();
+        List<GameObject> elements = new List<GameObject>();
         // Start is called before the first frame update
         void Start()
         {
@@ -32,7 +33,14 @@ namespace Framework
             for (int i = 0; i < formation.DamageSpecialists.Count; i++)
             {
                 string name = Enum.GetName(typeof(SpecialistType), formation.DamageSpecialists[i]);
-                GameObjectPool.Instance.CreateObject(name, getArchitecture().GetUtility<IResourceUtility>().Load<GameObject>(name), ElementPlaces[i].position, Quaternion.identity);
+                elements.Add( GameObjectPool.Instance.CreateObject(name, getArchitecture().GetUtility<IResourceUtility>().Load<GameObject>(name), ElementPlaces[i].position, Quaternion.identity));
+            }
+        }
+        public void ClearElement()
+        {
+            for (int i = 0; i < elements.Count; i++)
+            {
+                GameObjectPool.Instance.CollectObject(elements[i]);
             }
         }
 

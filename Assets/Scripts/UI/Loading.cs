@@ -16,7 +16,7 @@ namespace ElfWizard {
         }
         IEnumerator LoadScene()
         {
-            async = SceneManager.LoadSceneAsync(ElfWizardArch.Instance.GetModel<IBattleModel>().MapName);
+            async = SceneManager.LoadSceneAsync(ElfWizardArch.Instance.GetModel<IGameModel>().MapName);
             yield return async;
             //GameFacade.Instance.Init();
 /*            Constants.action();

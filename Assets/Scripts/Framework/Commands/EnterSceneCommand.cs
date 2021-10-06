@@ -12,7 +12,7 @@ namespace Framework
         public string MapName;
         protected override void OnExecute()
         {
-
+            this.GetModel<IGameModel>().MapName = MapName;
             SceneManager.LoadScene("Loading");
 
         }

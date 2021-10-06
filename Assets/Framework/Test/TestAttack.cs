@@ -1,8 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 using Framework;
 using ElfWizard;
+using Google.Protobuf;
+using System.Collections.Generic;
+
 public class TestAttack : MonoBehaviour
 {
     IArchitecture instance;
@@ -23,6 +25,13 @@ public class TestAttack : MonoBehaviour
         {
             instance.GetModel<IBattleModel>().currentTurn = ElfWizardArch.Instance.GetModel<IBattleModel>().enemy;
             instance.SendCommand<StartAttackCommand>();
+        }
+        PbBattle.DiceFormation formation = new PbBattle.DiceFormation();
+        formation.DamageSpecialists.Add(new List<PbSpirit.SpecialistType>() { PbSpirit.SpecialistType.StFire, PbSpirit.SpecialistType.StFire, PbSpirit.SpecialistType.StFire, PbSpirit.SpecialistType.StHoly, PbSpirit.SpecialistType.StHoly });
+        instance.GetModel<IBattleModel>().diceFormation = formation;
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            transform.Find("Elements").GetComponent<ElementController>().SetupElement(formation);
         }
 
     }

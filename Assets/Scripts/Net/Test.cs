@@ -118,7 +118,7 @@ public class Test : MonoBehaviour,IController
         this.GetModel<IUserModel>().UserData = obj;
         setUpUserBaseInfo();//给当前类中的userBaseInfo赋值
 
-        this.SendCommand<EnterSceneCommand>(new EnterSceneCommand { MapName = this.GetModel<IBattleModel>().MapName });//通过更改MapName来更改加载的地图
+        this.SendCommand<EnterSceneCommand>(new EnterSceneCommand { MapName = "MatchMenu" });//通过更改MapName来更改加载的地图
 
     }
 
@@ -151,6 +151,8 @@ public class Test : MonoBehaviour,IController
 
             C2S_EnterBattle msg = new C2S_EnterBattle();
             NetManager.Instance.Send(msg);
+
+            
         }
 
 

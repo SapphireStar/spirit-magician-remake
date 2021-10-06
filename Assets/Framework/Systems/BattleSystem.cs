@@ -7,7 +7,7 @@ namespace Framework
 {
     public interface IBattleSystem : ISystem 
     {
-        public void StartAttack(int value);
+        void StartAttack(int value);
     }
 
     public class BattleSystem : AbstractSystem, IBattleSystem
@@ -22,7 +22,7 @@ namespace Framework
         int count = 0;
         public void StartAttack(int value)
         {
-
+            
             if (value > 0)
             {
 

@@ -31,7 +31,7 @@ namespace Framework
         public int roundIndex { get; }
         public BindableProperty<int> activeUID { get; }
         public List<DiceInfo> diceInfo { get; }
-        public DiceFormation diceFormation { get; }
+        public DiceFormation diceFormation { get; set; }
         public List<int> specialEffects { get; }
         public BattleUnitCarriedSkill playerCarriedSkill { get; }
         public BattleUnitCarriedSkill enemyCarriedSkill { get; }
@@ -45,7 +45,7 @@ namespace Framework
         public string MapName { get; }
         public BattleState Turn { get; }
 
-
+        SkillEffect GetUidCarriedSkill();
     }
     public class BattleModel:AbstractModel,IBattleModel
     {
@@ -77,7 +77,7 @@ namespace Framework
         };
 
         public List<DiceInfo> diceInfo { get; }
-        public DiceFormation diceFormation { get; }
+        public DiceFormation diceFormation { get; set; }
         public List<int> specialEffects { get; }
         public BattleUnitCarriedSkill playerCarriedSkill { get; } = new BattleUnitCarriedSkill();
         public BattleUnitCarriedSkill enemyCarriedSkill { get; } = new BattleUnitCarriedSkill();
@@ -92,6 +92,8 @@ namespace Framework
 
         protected override void OnInit()
         {
+            
+            activeUID.Value = 2;
             currentTurn = player;
             playerCarriedSkill.Uid = 2;
             playerCarriedSkill.CarriedSkills.Add(new Google.Protobuf.Collections.RepeatedField<SkillEffect>() 
@@ -112,6 +114,13 @@ namespace Framework
                 new SkillEffect(){SkillID = "ElfHoly01"},
                 new SkillEffect(){SkillID = "ElfNature01"},
             });
+        }
+        public SkillEffect GetUidCarriedSkill()
+        {
+            if (playerCarriedSkill.Uid == activeUID.Value)
+                return playerCarriedSkill.CarriedSkills[Random.Range(0, playerCarriedSkill.CarriedSkills.Count)];
+            else return enemyCarriedSkill.CarriedSkills[Random.Range(0, enemyCarriedSkill.CarriedSkills.Count)];
+
         }
     }
 }

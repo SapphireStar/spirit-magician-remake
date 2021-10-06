@@ -187,11 +187,11 @@ namespace ElfWizard
         }
         public void AddRequest(ActionCode actionCode, BaseRequest request)
         {
-            requestManager.AddRequest(actionCode, request);
+            //requestManager.AddRequest(actionCode, request);
         }
         public void RemoveRequest(ActionCode actionCode)
         {
-            requestManager.RemoveRequest(actionCode);
+            //requestManager.RemoveRequest(actionCode);
         }
         public void HandleResponse(ActionCode actionCode, string data)
         {

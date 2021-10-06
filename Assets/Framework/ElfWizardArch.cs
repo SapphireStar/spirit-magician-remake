@@ -13,6 +13,7 @@ namespace Framework
         {
             RegisterModel<IUserModel>(new UserModel());
             RegisterModel<IBattleModel>(new BattleModel());
+            RegisterModel<IGameModel>(new GameModel());
 
             RegisterSystem<IUISystem>(new UIManager());
             RegisterSystem<IAudioSystem>(new AudioManager());
