@@ -9,48 +9,48 @@ namespace Framework
     public interface IBattleModel : IModel
     {
 
-        public BindableProperty<int> RemainAttackElfs { get; }
+        BindableProperty<int> RemainAttackElfs { get; }
 
-        public NewPlayerController player { get; set; }
-        public NewPlayerController enemy { get; set; }
-        public NewPlayerController currentTurn { get; set; }
+        NewPlayerController player { get; set; }
+        NewPlayerController enemy { get; set; }
+        NewPlayerController currentTurn { get; set; }
 
         #region BattleInfo
-        public BattleRoundInfo curRoundInfo { get; set; }
-        public BattleRoundInfo nextRoundInfo { get; set; }
-        public PlayerBattleInfo playerBattleInfo { get; set; }
+        BattleRoundInfo curRoundInfo { get; set; }
+        BattleRoundInfo nextRoundInfo { get; set; }
+        PlayerBattleInfo playerBattleInfo { get; set; }
 
 
-        public PlayerBattleInfo enemyBattleInfo { get; set; }
-        public BindableProperty<int> PlayerHP { get; }
-        public BindableProperty<int> EnemyHP { get; }
-        public Vector3[] PlayerSpawnPoints { get; }
-        public Vector3[] EnemySpawnPoints { get; }
-        public BattleInfo battleInfo { get; set; }
+        PlayerBattleInfo enemyBattleInfo { get; set; }
+        BindableProperty<int> PlayerHP { get; }
+        BindableProperty<int> EnemyHP { get; }
+        Vector3[] PlayerSpawnPoints { get; }
+        Vector3[] EnemySpawnPoints { get; }
+        BattleInfo battleInfo { get; set; }
 
-        public int roundIndex { get; }
-        public BindableProperty<int> activeUID { get; }
-        public List<DiceInfo> diceInfo { get; }
-        public DiceFormation diceFormation { get; set; }
-        public List<int> specialEffects { get; }
-        public BattleUnitCarriedSkill playerCarriedSkill { get; }
-        public BattleUnitCarriedSkill enemyCarriedSkill { get; }
+        int roundIndex { get; }
+        BindableProperty<int> activeUID { get; }
+        List<DiceInfo> diceInfo { get; }
+        DiceFormation diceFormation { get; set; }
+        List<int> specialEffects { get; }
+        BattleUnitCarriedSkill playerCarriedSkill { get; }
+        BattleUnitCarriedSkill enemyCarriedSkill { get; }
         #endregion
 
 
 
-        public int countDown { get; }
-        public int RemainTime { get; }
+        int countDown { get; }
+        int RemainTime { get; }
 
-        public string MapName { get; }
-        public BattleState Turn { get; }
+        string MapName { get; }
+        BattleState Turn { get; }
 
         SkillEffect GetUidCarriedSkill();
     }
     public class BattleModel:AbstractModel,IBattleModel
     {
 
-        public NewPlayerController player { get; set; }
+        public NewPlayerController player { get; set; }//由BattleSceneController管理
         public NewPlayerController enemy { get; set; }
         public NewPlayerController currentTurn { get; set; } = new NewPlayerController();
         public BindableProperty<int> RemainAttackElfs { get; } = new BindableProperty<int>
@@ -92,9 +92,14 @@ namespace Framework
 
         protected override void OnInit()
         {
-            
-            activeUID.Value = 2;
-            currentTurn = player;
+            activeUID.OnValueChanged += (value) =>//当activeUID改变时，更改当前生效的PlayerController
+            {
+                if (value == player.UID)
+                    currentTurn = player;
+                else
+                    currentTurn = enemy;
+            };
+
             playerCarriedSkill.Uid = 2;
             playerCarriedSkill.CarriedSkills.Add(new Google.Protobuf.Collections.RepeatedField<SkillEffect>() 
             {
@@ -114,6 +119,7 @@ namespace Framework
                 new SkillEffect(){SkillID = "ElfHoly01"},
                 new SkillEffect(){SkillID = "ElfNature01"},
             });
+
         }
         public SkillEffect GetUidCarriedSkill()
         {

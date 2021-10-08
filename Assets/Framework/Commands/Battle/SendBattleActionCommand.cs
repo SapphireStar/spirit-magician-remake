@@ -11,7 +11,7 @@ namespace Framework
         public int[] diceLocked;
         protected override void OnExecute()
         {
-            
+
         }
     }
 }

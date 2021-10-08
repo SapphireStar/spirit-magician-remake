@@ -23,12 +23,8 @@ namespace Framework
         bool[] EnemyElfReminder = new bool[3];
 
         protected override void OnInit()
-        { 
-            this.RegisterEvent<RequireBattleInfoEvent>((e) => 
-            {
-                player = battleModel.player;
-                enemy = battleModel.enemy;
-            });
+        {
+            this.RegisterEvent<SetupBattleSceneEvent>((e) => { player = battleModel.player;enemy = battleModel.enemy; });
             playerElfList = new List<Elf_Monobehavior>(3);
             enemyElfList = new List<Elf_Monobehavior>(3);
             battleModel = this.GetModel<IBattleModel>();

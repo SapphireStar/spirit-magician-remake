@@ -169,7 +169,7 @@ public class CommandPanel : BasePanel,IController
         battleAction.PlayerBattleInfos.Add(info.PlayerBattleInfos[1]);
         battleAction.CurRoundInfo = info;
         IMessage obj = battleAction;
-        BattleRequest.OnResponse(obj);
+        //BattleRequest.OnResponse(obj);
     }
     public void clientba(object[] s)
     {

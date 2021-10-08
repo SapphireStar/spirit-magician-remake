@@ -12,15 +12,15 @@ namespace ElfWizard
         protected GameFacade gameFacade;
         public void SetFacade(GameFacade facade)
         {
-            this.gameFacade = facade;
+            //this.gameFacade = facade;
         }
         /// <summary>
         /// 当脚本被激活时，将对应的request加入到requestDic中
         /// </summary>
         public virtual void Awake()
         {
-            gameFacade = GameFacade.Instance;
-            gameFacade.AddRequest(actionCode, this);
+/*            gameFacade = GameFacade.Instance;
+            gameFacade.AddRequest(actionCode, this);*/
         }
 
         protected virtual void SendRequest() { }
@@ -41,7 +41,7 @@ namespace ElfWizard
         /// </summary>
         private void OnDestroy()
         {
-            GameFacade.Instance.RemoveRequest(actionCode);
+            //GameFacade.Instance.RemoveRequest(actionCode);
         }
     }
 }

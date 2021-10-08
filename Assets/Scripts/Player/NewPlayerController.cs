@@ -49,17 +49,21 @@ namespace ElfWizard
                 if (buffList[i] == null)
                     buffList.RemoveAt(i);
             }
-            IBuff[] buff = gameObject.GetComponents<IBuff>();
-            for (int i = 0; i < buff.Length; i++)
+            if (gameObject.GetComponents<IBuff>() != null)
             {
-                if (!buffList.Contains(buff[i]))
-                    buffList.Add(buff[i]);
+                IBuff[] buff = gameObject.GetComponents<IBuff>();
+                for (int i = 0; i < buff.Length; i++)
+                {
+                    if (!buffList.Contains(buff[i]))
+                        buffList.Add(buff[i]);
 
+                }
+                foreach (var item in buffList)
+                {
+                    item.ApplyBuff();
+                }
             }
-            foreach (var item in buffList)
-            {
-                item.ApplyBuff();
-            }
+
         }
 
         IArchitecture IBelongToArchitecture.getArchitecture()

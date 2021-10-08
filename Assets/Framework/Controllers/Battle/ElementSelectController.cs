@@ -33,12 +33,13 @@ namespace Framework
             mElementType = (SpecialistType)Enum.Parse(typeof(SpecialistType), name.Replace("(Clone)", ""));
             DiceFormation formation = this.GetModel<IBattleModel>().diceFormation;
             int count = 0 ;
+            List<int> lockedDices = new List<int>();
             for (int i = 0; i < formation.DamageSpecialists.Count; i++)
             {
-                Debug.Log(formation.DamageSpecialists[i]);
                 if (formation.DamageSpecialists[i].Equals(mElementType))
                 {
                     count++;
+                    lockedDices.Add(i);
                 }
             }
             Debug.Log(count);
@@ -46,7 +47,7 @@ namespace Framework
             {
                 this.GetSystem<ISpawnSystem>().SpawnElf(this.GetModel<IBattleModel>().activeUID.Value, this.GetModel<IBattleModel>().GetUidCarriedSkill());
             }
-            this.SendCommand<ElementSelectCommand>();
+            this.SendCommand<ElementSelectCommand>(new ElementSelectCommand() {LockedDices = lockedDices});
         }
     }
 }

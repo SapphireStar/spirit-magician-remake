@@ -59,8 +59,8 @@ public class Test : MonoBehaviour,IController
         NetManager.Instance.RegistListener(EDict.PbBattleS2CBattleEnd, this.BattleHandler);
 
 
-        NetManager.Instance.RegistListener(EDict.PbBattleS2CBattleAction, this.PbBattleS2CUpdateBattleAction);
-        NetManager.Instance.RegistListener(EDict.PbBattleS2CUpdateBattleAction, this.PbBattleS2CUpdateBattleAction);//TODO:添加EnterGame回调
+        NetManager.Instance.RegistListener(EDict.PbBattleS2CBattleAction, this.BattleHandler);
+        NetManager.Instance.RegistListener(EDict.PbBattleS2CUpdateBattleAction, this.BattleHandler);//TODO:添加EnterGame回调
 
         this.RegisterEvent<LoginEvent>(OnLoginClicked);
         this.RegisterEvent<EnterGameEvent>(OnEnterGameClicked);
@@ -88,7 +88,8 @@ public class Test : MonoBehaviour,IController
         NetManager.Instance.BeginHeartBeat();
 
         S2C_Auth sa = S2C_Auth.Parser.ParseFrom(obj.ToByteArray());
-
+        this.GetModel<IUserModel>().userBaseInfo = sa.User;
+        
         if (!sa.Ok)//若验证失败，则登录失败
         {
             Debug.LogError("PbLoginS2CAuth fail!");
@@ -131,14 +132,10 @@ public class Test : MonoBehaviour,IController
         userBaseInfo.Lv = (int)info["Lv"];
         userBaseInfo.Uid = (int)info["Uid"];
     }
-    void PbBattleS2CUpdateBattleAction(IMessage obj)
-    {
-        BattleRequest.OnResponse(obj);
-    }
 
     void BattleHandler(IMessage obj)
     {
-        //BattleRequest.OnResponse(obj);
+
         if (obj is S2C_StartBattle)
         {
             Debug.Log("------S2CStartBattle------");
@@ -146,8 +143,6 @@ public class Test : MonoBehaviour,IController
 
             this.GetModel<IBattleModel>().battleInfo = obj as BattleInfo;
             Debug.Log("BattleHandler ---- battleID: " + battleID);
-
-            //GameFacade.Instance.battleManager.battleInfo = ((S2C_StartBattle)obj).BattleInfo;//初始化对战玩家信息,临时代码 TODO:需要修改
 
             C2S_EnterBattle msg = new C2S_EnterBattle();
             NetManager.Instance.Send(msg);
@@ -160,11 +155,19 @@ public class Test : MonoBehaviour,IController
         {
            // GameFacade.Instance.StartGame();//TODO 测试用
             Debug.Log("------S2CEnterBattle------");
+            Debug.Log("Start Battle In 2 Seconds");
+            this.SendCommand<EnterSceneCommand>(new EnterSceneCommand() { MapName = "TestFramework" });
+            StartCoroutine(WaitForEnterBattle(2));
 
-            this.SendCommand<StartBattleCommand>(new StartBattleCommand() { InitRoundInfo = obj});
+        }
+        IEnumerator WaitForEnterBattle(float time)
+        {
+            yield return new WaitForSeconds(time);
+            this.SendCommand<StartBattleCommand>(new StartBattleCommand() { InitRoundInfo = obj });
+
 
             curRoundInfo = ((S2C_EnterBattle)obj).BattleRoundInfo;
-            //GameFacade.Instance.UpdateRoundInfo(((S2C_EnterBattle)obj).BattleRoundInfo);
+ 
             isMyRound = (curRoundInfo.ActiveUID == userBaseInfo.Uid);
             Debug.Log("BattleHandler ---- battleActiveUID: " + curRoundInfo.ActiveUID + ", isMyRound: " + isMyRound);
 
@@ -181,13 +184,21 @@ public class Test : MonoBehaviour,IController
 
         if (obj is S2C_UpdateBattleAction)
         {
-            GameFacade.Instance.UpdateRoundInfo(curRoundInfo, nextRoundInfo);
+            //GameFacade.Instance.UpdateRoundInfo(curRoundInfo, nextRoundInfo);
             Debug.Log("----------- S2C_UpdateBattleAction ---------");
 
             var uba = (S2C_UpdateBattleAction)obj;
 
             curRoundInfo = uba.CurRoundInfo;
+            this.GetModel<IBattleModel>().curRoundInfo = uba.CurRoundInfo;
+            this.GetModel<IBattleModel>().nextRoundInfo = uba.NextRoundInfo;
+            this.SendCommand<UpdateRoundInfoCommand>(new UpdateRoundInfoCommand
+            {
+                curRoundInfo = uba.CurRoundInfo,
+                nextRoundInfo = uba.NextRoundInfo,
+                activeUID = curRoundInfo.ActiveUID
 
+            }) ;
 
             Debug.Log("curRoundInfo: " + JsonConvert.SerializeObject(curRoundInfo));
 
@@ -200,27 +211,15 @@ public class Test : MonoBehaviour,IController
             if (uba.ActionType == BattleActionType.BatAttack)
             {
                 //应该在此进行攻击表现,然后进入下一轮
-                //使用curRoundInfo里的effects来进行表现
-                BattleRequest.OnResponse(obj);
-                Dictionary<int, string> currentPlayerElfs = new Dictionary<int, string>();
-                currentPlayerElfs.Add(2, "ElfFire01");
-                currentPlayerElfs.Add(1, "ElfIce01");
-                currentPlayerElfs.Add(3, "EnemySlimeFire01");
-                foreach (var item in curRoundInfo.BuCarriedSkill)
-                {
-                    if (currentPlayerElfs.ContainsKey(item.Uid))
-                    {
-                        
-                    }
-
-                }
+                //使用curRoundInfo里的effects来进行表
 
                 Debug.Log("对攻击进行表现");
+                
                 foreach (var bu in curRoundInfo.PlayerBattleInfos)
                 {
                     Debug.Log("UID: " + bu.Uid + ", HP: " + bu.Hp);
                 }
-
+                this.SendCommand<StartAttackCommand>();
                 if (nextRoundInfo != null)
                 {
                     //进入下一轮
@@ -229,15 +228,15 @@ public class Test : MonoBehaviour,IController
                     if (curRoundInfo.ActiveUID == userBaseInfo.Uid)
                     {
 
-
-
-
-
                         StartCoroutine(DelaySendBattleAction(BattleActionType.BatRoll));
                         Debug.Log("------roll骰子------");
                     }
                 }
 
+            }
+            else if (uba.ActionType == BattleActionType.BatRoll)
+            {
+                this.SendCommand<BattleRollCommand>();
             }
             else if (uba.ActionType == BattleActionType.BatRoll && hasSendRollAction)//如果已经选择了骰子，并且接受到了来自服务器batroll的回应，则开始攻击
             {
@@ -269,7 +268,7 @@ public class Test : MonoBehaviour,IController
         C2S_BattleAction action = new C2S_BattleAction();
         action.ActionType = actionType;
         action.RoundIndex = curRoundInfo.RoundIndex;
-        action.TargetUID = GameFacade.Instance.battleManager.enemyBattleInfo.Uid;
+        //action.TargetUID = GameFacade.Instance.battleManager.enemyBattleInfo.Uid;
         if (lockedDices != null)
         {
             for (int i = 0; i < lockedDices.Length; i++)

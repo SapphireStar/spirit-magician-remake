@@ -37,6 +37,7 @@ namespace Framework
                     battleModel.currentTurn.PlayerElfs[j].GetComponent<IBuffer>().UpdateBuff();
                 }
                 battleModel.currentTurn.UpdateBuff();
+                this.SendEvent<EndAttackEvent>(new EndAttackEvent() { nextRound =battleModel.nextRoundInfo.ActiveUID.ToString() });//结束攻击，发送结束攻击事件
             }
 
 

@@ -54,8 +54,8 @@ namespace ElfWizard
             S2C_UpdateBattleAction battleAction = S2C_UpdateBattleAction.Parser.ParseFrom(obj.ToByteArray());
             BattleRoundInfo curRoundInfo = battleAction.CurRoundInfo;
             BattleRoundInfo nextRoundInfo = battleAction.NextRoundInfo;
-            GameFacade.Instance.UpdateRoundInfo(curRoundInfo, nextRoundInfo);//更新Gamefacade中的roundinfo
-            GameFacade.Instance.battleManager.UpdateBattleRoundInfo(battleAction.CurRoundInfo, battleAction);
+ /*           GameFacade.Instance.UpdateRoundInfo(curRoundInfo, nextRoundInfo);//更新Gamefacade中的roundinfo
+            GameFacade.Instance.battleManager.UpdateBattleRoundInfo(battleAction.CurRoundInfo, battleAction);*/
 
 
             Debug.Log("curRoundInfo: " + JsonConvert.SerializeObject(curRoundInfo));
@@ -63,17 +63,17 @@ namespace ElfWizard
 
             switch (battleAction.ActionType)
             {
-                case BattleActionType.BatInit:
+/*                case BattleActionType.BatInit:
                     Debug.Log("------Init Battle------");
-                    GameFacade.Instance.StartGame();
+                    //GameFacade.Instance.StartGame();
                     break;
                 case BattleActionType.BatRoll:
                     Debug.Log("------Roll------");
                     //List<PbSpirit.SpecialistType> temp = new List<PbSpirit.SpecialistType>();
-/*                    foreach (var item in battleAction.CurRoundInfo.Formation.DamageSpecialists)
+*//*                    foreach (var item in battleAction.CurRoundInfo.Formation.DamageSpecialists)
                     {
                         temp.Add(item);
-                    }*/
+                    }*//*
                     List<PbSpirit.SpecialistType> temp = new List<PbSpirit.SpecialistType>();
                     foreach (DiceInfo item in curRoundInfo.DiceInfo)
                     {
@@ -93,7 +93,7 @@ namespace ElfWizard
                     Debug.Log("------TimeOut------");
                     GameFacade.Instance.spawnManager.UpdatePlayerElfs(curRoundInfo);
                     GameFacade.Instance.StartCoroutine(Wait(1, GameFacade.Instance.StartAttack));
-                    break;
+                    break;*/
 
             }
         }

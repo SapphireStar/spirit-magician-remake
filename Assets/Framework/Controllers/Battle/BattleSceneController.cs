@@ -21,7 +21,9 @@ namespace ElfWizard
             enemyGO.tag = "Enemy";
             playerGO.GetComponent<NewPlayerController>().UID = 2;
             enemyGO.GetComponent<NewPlayerController>().UID = -1;
-            this.SendCommand<UpdateBattleInfoCommand>(new UpdateBattleInfoCommand() { player = playerGO.GetComponent<NewPlayerController>(), enemy= enemyGO.GetComponent<NewPlayerController>() });
+            this.SendCommand<SetupBattleSceneCommand>(new SetupBattleSceneCommand
+                                                    { player = playerGO.GetComponent<NewPlayerController>(),
+                                                      enemy = enemyGO.GetComponent<NewPlayerController>() });
         }
 
 
