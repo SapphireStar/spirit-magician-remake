@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6964378768180700876}
   - component: {fileID: 8265553920694717245}
   m_Layer: 0
-  m_Name: StNature
+  m_Name: StNatural
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

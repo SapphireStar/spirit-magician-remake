@@ -4,6 +4,8 @@ using Framework;
 using ElfWizard;
 using Google.Protobuf;
 using System.Collections.Generic;
+using PbBattle;
+using System;
 
 public class TestAttack : MonoBehaviour
 {
@@ -26,12 +28,25 @@ public class TestAttack : MonoBehaviour
             instance.GetModel<IBattleModel>().currentTurn = ElfWizardArch.Instance.GetModel<IBattleModel>().enemy;
             instance.SendCommand<StartAttackCommand>();
         }
-        PbBattle.DiceFormation formation = new PbBattle.DiceFormation();
-        formation.DamageSpecialists.Add(new List<PbSpirit.SpecialistType>() { PbSpirit.SpecialistType.StFire, PbSpirit.SpecialistType.StFire, PbSpirit.SpecialistType.StFire, PbSpirit.SpecialistType.StHoly, PbSpirit.SpecialistType.StHoly });
-        instance.GetModel<IBattleModel>().diceFormation = formation;
+
+        //instance.GetModel<IBattleModel>().diceFormation = formation;
+
         if (Input.GetKeyDown(KeyCode.E))
         {
-            transform.Find("Elements").GetComponent<ElementController>().SetupElement(formation);
+            Google.Protobuf.Collections.RepeatedField<DiceInfo> diceInfos = new Google.Protobuf.Collections.RepeatedField<DiceInfo>();
+            diceInfos.Add(new Google.Protobuf.Collections.RepeatedField<DiceInfo> { new DiceInfo() { DiceValue = 1 }, new DiceInfo() { DiceValue = 1 }, new DiceInfo() { DiceValue = 1 }, new DiceInfo() { DiceValue = 2 }, new DiceInfo() { DiceValue = 2 }, });
+            instance.GetModel<IBattleModel>().curRoundInfo = new BattleRoundInfo();
+            try
+            {
+                instance.GetModel<IBattleModel>().curRoundInfo.DiceInfo.Clear();
+
+            }
+            catch(Exception e)
+            {
+                Debug.Log("currentRoundInfo DiceInfo is null");
+            }
+            instance.GetModel<IBattleModel>().curRoundInfo.DiceInfo.Add(diceInfos);
+            transform.Find("Elements").GetComponent<ElementController>().SetupElement(diceInfos);
         }
 
     }

@@ -25,7 +25,7 @@ namespace Framework
             
             if (value > 0)
             {
-
+                Debug.Log(battleModel.currentTurn.PlayerElfs.Count);
                 battleModel.currentTurn.PlayerElfs[count].GetComponent<Elf_Monobehavior>().UseSkill();
                 count++;
             }
@@ -38,6 +38,7 @@ namespace Framework
                 }
                 battleModel.currentTurn.UpdateBuff();
                 this.SendEvent<EndAttackEvent>(new EndAttackEvent() { nextRound =battleModel.nextRoundInfo.ActiveUID.ToString() });//结束攻击，发送结束攻击事件
+
             }
 
 

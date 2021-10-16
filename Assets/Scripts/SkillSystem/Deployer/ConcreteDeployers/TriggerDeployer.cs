@@ -16,7 +16,7 @@ namespace ElfWizard
         {
             //StartCoroutine(WaitSkillDeployed());
             isDeployed = true;
-            Framework.ElfWizardArch.Get<BattleModel>().RemainAttackElfs.Value++;
+            Framework.ElfWizardArch.Get<IBattleModel>().RemainAttackElfs.Value++;
         }
         public override void DeploySkill(GameObject skillGO)
         {

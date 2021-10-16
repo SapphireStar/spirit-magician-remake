@@ -11,15 +11,22 @@ namespace Framework
     {
         public IMessage InitRoundInfo;
         IBattleModel battleModel;
+        S2C_EnterBattle s2C_EnterBattle;
         protected override void OnExecute()
         {
-            battleModel = this.GetModel<IBattleModel>();
+            s2C_EnterBattle = InitRoundInfo as S2C_EnterBattle;
 
+            battleModel = this.GetModel<IBattleModel>();
             if (InitRoundInfo != null)
-                battleModel.curRoundInfo = (InitRoundInfo as S2C_EnterBattle).BattleRoundInfo;
+                battleModel.curRoundInfo = s2C_EnterBattle.BattleRoundInfo;
             else
                 Debug.Log("------³õÊ¼BattleRoundInfoÎª¿Õ------");
-            battleModel.activeUID.Value = (InitRoundInfo as S2C_EnterBattle).BattleRoundInfo.ActiveUID;
+            battleModel.activeUID.Value = s2C_EnterBattle.BattleRoundInfo.ActiveUID;
+
+            foreach (var item in s2C_EnterBattle.BattleRoundInfo.PlayerBattleInfos)
+            {
+                battleModel.playerBattleInfos.Add(item);
+            }
 
             battleModel.player.UID = this.GetModel<IUserModel>().userBaseInfo.Uid;
             foreach (var item in battleModel.curRoundInfo.PlayerBattleInfos)

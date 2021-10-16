@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using ProtoBuf;
 using ElfWizard.Manager;
+using Framework;
 
 namespace ElfWizard
 {
     
-    public class Elf_Monobehavior : MonoBehaviour, IDamagable,IBuffer
+    public class Elf_Monobehavior : MonoBehaviour, IDamagable,IBuffer,IController
     {
 
         [Header("Elf Properties")]
@@ -110,6 +111,11 @@ namespace ElfWizard
             {
                 item.ApplyBuff();
             }
+        }
+
+        public IArchitecture getArchitecture()
+        {
+            return ElfWizardArch.Instance;
         }
     }
 }

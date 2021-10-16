@@ -14,7 +14,7 @@ public class BattleRollCommand : AbstractCommand, ICommand
         {
             Debug.Log(item);
         }
-        elementController.SetupElement(this.GetModel<IBattleModel>().curRoundInfo.Formation);
+        elementController.SetupElement(this.GetModel<IBattleModel>().curRoundInfo.DiceInfo);
 
     }
 }

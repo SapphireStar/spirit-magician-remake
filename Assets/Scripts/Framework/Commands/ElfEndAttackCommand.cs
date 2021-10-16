@@ -16,6 +16,7 @@ namespace ElfWizard.Commands
         protected override void OnExecute()
         {
             this.GetModel<IBattleModel>().RemainAttackElfs.Value--;
+
         }
     }
 }

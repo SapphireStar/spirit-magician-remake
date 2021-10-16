@@ -28,12 +28,21 @@ namespace Framework
             formation.DamageSpecialists.Add(new SpecialistType[] { SpecialistType.StFire, SpecialistType.StFire, SpecialistType.StFire,SpecialistType.StIce,SpecialistType.StIce });
             SetupElement(formation);*/
         }
-        public void SetupElement(DiceFormation formation)
+/*        public void SetupElement(DiceFormation formation)
         {
             for (int i = 0; i < formation.DamageSpecialists.Count; i++)
             {
                 string name = Enum.GetName(typeof(SpecialistType), formation.DamageSpecialists[i]);
                 elements.Add( GameObjectPool.Instance.CreateObject(name, getArchitecture().GetUtility<IResourceUtility>().Load<GameObject>(name), ElementPlaces[i].position, Quaternion.identity));
+            }
+        }*/
+        public void SetupElement(Google.Protobuf.Collections.RepeatedField<DiceInfo> diceInfos)
+        {
+            for (int i = 0; i < diceInfos.Count; i++)
+            {
+                string name = Enum.GetName(typeof(SpecialistType), diceInfos[i].DiceValue);
+                Debug.Log(name);
+                elements.Add(GameObjectPool.Instance.CreateObject(name, getArchitecture().GetUtility<IResourceUtility>().Load<GameObject>(name), ElementPlaces[i].position, Quaternion.identity));
             }
         }
         public void ClearElement()

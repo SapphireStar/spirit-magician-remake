@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using ElfWizard;
 using PbBattle;
@@ -11,16 +12,20 @@ namespace Framework
 
         BindableProperty<int> RemainAttackElfs { get; }
 
+        List<NewPlayerController> players { get; set; }
+        [Obsolete("use players")]
         NewPlayerController player { get; set; }
+        [Obsolete("use players")]
         NewPlayerController enemy { get; set; }
         NewPlayerController currentTurn { get; set; }
 
         #region BattleInfo
         BattleRoundInfo curRoundInfo { get; set; }
         BattleRoundInfo nextRoundInfo { get; set; }
+        List<PlayerBattleInfo> playerBattleInfos { get; set; }
+        [Obsolete("playerBattleInfos")]
         PlayerBattleInfo playerBattleInfo { get; set; }
-
-
+        [Obsolete("playerBattleInfos")]
         PlayerBattleInfo enemyBattleInfo { get; set; }
         BindableProperty<int> PlayerHP { get; }
         BindableProperty<int> EnemyHP { get; }
@@ -46,10 +51,14 @@ namespace Framework
         BattleState Turn { get; }
 
         SkillEffect GetUidCarriedSkill();
+        PlayerBattleInfo GetPlayerBattleInfoByUid(int Uid);
+        NewPlayerController GetPlayerControllerByUid(int Uid);
     }
     public class BattleModel:AbstractModel,IBattleModel
     {
+        public List<NewPlayerController> players { get; set; } = new List<NewPlayerController>();
 
+        
         public NewPlayerController player { get; set; }//由BattleSceneController管理
         public NewPlayerController enemy { get; set; }
         public NewPlayerController currentTurn { get; set; } = new NewPlayerController();
@@ -59,6 +68,7 @@ namespace Framework
         };
         public BattleRoundInfo curRoundInfo { get; set; }
         public BattleRoundInfo nextRoundInfo { get; set; }
+        public List<PlayerBattleInfo> playerBattleInfos { get; set; } = new List<PlayerBattleInfo>();
         public PlayerBattleInfo playerBattleInfo { get; set; } = new PlayerBattleInfo();
 
         public PlayerBattleInfo enemyBattleInfo { get; set; } = new PlayerBattleInfo();
@@ -124,9 +134,30 @@ namespace Framework
         public SkillEffect GetUidCarriedSkill()
         {
             if (playerCarriedSkill.Uid == activeUID.Value)
-                return playerCarriedSkill.CarriedSkills[Random.Range(0, playerCarriedSkill.CarriedSkills.Count)];
-            else return enemyCarriedSkill.CarriedSkills[Random.Range(0, enemyCarriedSkill.CarriedSkills.Count)];
+                return playerCarriedSkill.CarriedSkills[UnityEngine.Random.Range(0, playerCarriedSkill.CarriedSkills.Count)];
+            else return enemyCarriedSkill.CarriedSkills[UnityEngine.Random.Range(0, enemyCarriedSkill.CarriedSkills.Count)];
 
+        }
+
+        public NewPlayerController GetPlayerControllerByUid(int Uid)
+        {
+            foreach (var item in players)
+            {
+                if (Uid == item.UID)
+                    return item;
+            }
+            Debug.Log("无法找到玩家控制器");
+            return null;
+        }
+        public PlayerBattleInfo GetPlayerBattleInfoByUid(int Uid)
+        {
+            foreach (var item in playerBattleInfos)
+            {
+                if (item.Uid == Uid)
+                    return item;
+            }
+            Debug.Log("无法找到玩家战斗信息");
+            return null;
         }
     }
 }

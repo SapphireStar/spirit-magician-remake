@@ -236,6 +236,7 @@ public class Test : MonoBehaviour,IController
             }
             else if (uba.ActionType == BattleActionType.BatRoll)
             {
+                Debug.Log("------roll骰子------");
                 this.SendCommand<BattleRollCommand>();
             }
             else if (uba.ActionType == BattleActionType.BatRoll && hasSendRollAction)//如果已经选择了骰子，并且接受到了来自服务器batroll的回应，则开始攻击

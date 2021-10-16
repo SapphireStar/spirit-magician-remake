@@ -11,7 +11,8 @@ namespace ElfWizard
         public NewPlayerController enemy;
         protected override void OnExecute()
         {
-
+            this.GetModel<IBattleModel>().players.Add(player);
+            this.GetModel<IBattleModel>().players.Add(enemy);
             this.GetModel<IBattleModel>().player = player;
             this.GetModel<IBattleModel>().enemy = enemy;
             this.SendEvent<SetupBattleSceneEvent>();

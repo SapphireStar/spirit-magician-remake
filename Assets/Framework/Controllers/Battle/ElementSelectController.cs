@@ -31,12 +31,12 @@ namespace Framework
         {
 
             mElementType = (SpecialistType)Enum.Parse(typeof(SpecialistType), name.Replace("(Clone)", ""));
-            DiceFormation formation = this.GetModel<IBattleModel>().diceFormation;
+            Google.Protobuf.Collections.RepeatedField<DiceInfo> diceInfos = this.GetModel<IBattleModel>().curRoundInfo.DiceInfo;
             int count = 0 ;
             List<int> lockedDices = new List<int>();
-            for (int i = 0; i < formation.DamageSpecialists.Count; i++)
+            for (int i = 0; i < diceInfos.Count; i++)
             {
-                if (formation.DamageSpecialists[i].Equals(mElementType))
+                if (diceInfos[i].DiceValue ==(int)mElementType)
                 {
                     count++;
                     lockedDices.Add(i);
