@@ -31,14 +31,7 @@ namespace ElfWizard {
         {
             Text text = GetComponentInChildren<Text>();
             text.text = txt;
-/*            if (GameFacade.Instance.turn == BattleState.ENEMYTURN)
-            {
-                text.text ="Switch To PlayerTurn";
-            }
-            else
-            {
-                text.text = "Switch To EnemyTurn";
-            }*/
+
         }
     }
 

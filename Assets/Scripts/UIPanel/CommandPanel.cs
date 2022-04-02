@@ -191,18 +191,18 @@ public class CommandPanel : BasePanel,IController
             {
                 temp[i] =int.Parse(commands[i + 1]);
             }
-            this.SendCommand<SendBattleActionCommand>(new SendBattleActionCommand()
+            this.SendCommand<SendAttackBattleActionCommand>(new SendAttackBattleActionCommand()
             {
-                battleActionType = (BattleActionType)int.Parse(commands[0]),
+               // battleActionType = (BattleActionType)int.Parse(commands[0]),
                 diceLocked = temp
             }) ;
             GameFacade.Instance.SendBattleAction((BattleActionType)int.Parse(commands[0]), temp);
             Debug.Log("send battleaction: " + Enum.GetName(typeof(BattleActionType), battleAction.ActionType));
             return;
         }
-        this.SendCommand<SendBattleActionCommand>(new SendBattleActionCommand()
+        this.SendCommand<SendAttackBattleActionCommand>(new SendAttackBattleActionCommand()
         {
-            battleActionType = (BattleActionType)int.Parse(commands[0])
+            //battleActionType = (BattleActionType)int.Parse(commands[0])
         });
 
 

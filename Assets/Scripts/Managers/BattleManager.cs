@@ -84,7 +84,6 @@ namespace ElfWizard
 
         public void StartGame()
         {
-            this.SendEvent<GameStartEvent>();
             GameFacade.Instance.StartCoroutine(CountingDown());
         }
 

@@ -76,6 +76,7 @@ namespace Framework
         Dictionary<Type, IRegistrations> mRegistrations = new Dictionary<Type, IRegistrations>();
         public void Send<T>() where T : new()
         {
+           
             T e = new T();
             Send<T>(e);
         }

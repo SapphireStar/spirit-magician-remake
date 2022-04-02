@@ -142,6 +142,8 @@ public class Test : MonoBehaviour,IController
             battleID = ((S2C_StartBattle)obj).BattleInfo.Id;
 
             this.GetModel<IBattleModel>().battleInfo = obj as BattleInfo;
+            this.GetModel<IBattleModel>().countDown = 10; ;
+
             Debug.Log("BattleHandler ---- battleID: " + battleID);
 
             C2S_EnterBattle msg = new C2S_EnterBattle();
@@ -153,7 +155,6 @@ public class Test : MonoBehaviour,IController
 
         if (obj is S2C_EnterBattle)
         {
-           // GameFacade.Instance.StartGame();//TODO 测试用
             Debug.Log("------S2CEnterBattle------");
             Debug.Log("Start Battle In 2 Seconds");
             this.SendCommand<EnterSceneCommand>(new EnterSceneCommand() { MapName = "TestFramework" });
@@ -241,6 +242,7 @@ public class Test : MonoBehaviour,IController
             }
             else if (uba.ActionType == BattleActionType.BatRoll && hasSendRollAction)//如果已经选择了骰子，并且接受到了来自服务器batroll的回应，则开始攻击
             {
+                Debug.Log("------如果已经选择了骰子，并且接受到了来自服务器batroll的回应，则开始攻击-------");
                 if (curRoundInfo.ActiveUID == userBaseInfo.Uid)
                 {
                     StartCoroutine(DelaySendBattleAction(BattleActionType.BatAttack));
@@ -253,7 +255,7 @@ public class Test : MonoBehaviour,IController
 
             var be = (S2C_BattleEnd)obj;
             Debug.Log("BattleEnd ---- battleID: " + be.BattleID + ", winner is: " + be.WinnerUid);
-
+            this.SendCommand<GameOverCommand>(new GameOverCommand() { winner = "Winner is " +be.WinnerUid.ToString() });
         }
 
     }
